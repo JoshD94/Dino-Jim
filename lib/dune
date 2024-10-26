@@ -1,3 +1,5 @@
 (library
- (name Jim)
+ (name menu)
+ (public_name Jim.menu)
+ (modules menu)
  (libraries raylib))
