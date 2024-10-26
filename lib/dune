@@ -1,2 +1,3 @@
 (library
- (name Jim))
+ (name Jim)
+ (libraries raylib))
