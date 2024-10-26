@@ -1,4 +1,4 @@
 (executable
  (public_name Jim)
  (name main)
- (libraries Jim))
+ (libraries menu raylib))
