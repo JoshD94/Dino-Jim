@@ -1,6 +1,5 @@
-(* main.ml *)
-open Jim.Game
-open Menu
+open Jim.Menu
+open Raylib
 
 (* let () = (* Initialize game with starting values *) let starting_level = 1 in
    let starting_length = 1 in let starting_speed = 1 in let gravity = 1.0 in let

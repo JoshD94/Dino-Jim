@@ -5,6 +5,13 @@ type position = {
 }
 (** Type representing the position of game entities *)
 
+type game_state = {
+  pos : position;
+  obstacles : Obstacle.t list;
+  speed : float;
+}
+(** Type representing the complete game state *)
+
 val level : int
 (** Current game level *)
 
@@ -22,9 +29,9 @@ val gravity : float
 
 val init_game : int -> int -> int -> float -> float -> unit -> unit
 (** Initialize and start the game with given parameters
-    @param lvl Current level number
-    @param len Level length
-    @param speed_mul Speed multiplier
+    @param lvl Game level
+    @param len Game length
+    @param spd Game speed multiplier
     @param g Gravity constant
     @param jf Jump force constant *)
 
@@ -35,6 +42,6 @@ val update_position : position -> float -> float -> position
     @param jf Jump force constant
     @return New position *)
 
-val render : position -> unit
+val render : game_state -> unit
 (** Render game state
-    @param pos Current position *)
+    @param state Current game state *)
