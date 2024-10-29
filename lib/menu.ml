@@ -1,4 +1,5 @@
 open Raylib
+open Shop
 
 let button_size = 100.0
 let padding = 30.0
@@ -9,6 +10,7 @@ let num_levels = 12
 type game_state =
   | LevelSelect
   | Level of int
+  | Shop
 
 (* Run function to start the menu *)
 let run_menu () =
@@ -35,6 +37,23 @@ let run_menu () =
             draw_text title
               ((screen_width - title_width) / 2)
               40 title_size Color.black;
+
+            (* Draw shop button *)
+            draw_rectangle 800 100 100 40 Color.gray;
+            draw_text "Shop" 825 110 20 Color.white;
+
+            (* Check for shop button click *)
+            let shop_clicked = ref false in
+            if is_mouse_button_pressed MouseButton.Left then begin
+              let mouse_pos = get_mouse_position () in
+              let mouse_x = Vector2.x mouse_pos in
+              let mouse_y = Vector2.y mouse_pos in
+              if
+                mouse_x >= 800.0 && mouse_x <= 900.0 && mouse_y >= 100.0
+                && mouse_y <= 140.0
+              then shop_clicked := true
+              else shop_clicked := false
+            end;
 
             (* Draw level buttons *)
             let clicked_level = ref None in
@@ -82,10 +101,12 @@ let run_menu () =
               end
             done;
 
-            match !clicked_level with
-            | Some n -> Level n
-            | None -> LevelSelect)
-        | Level n ->
+            if !shop_clicked then Shop
+            else
+              match !clicked_level with
+              | Some n -> Level n
+              | None -> LevelSelect)
+        | Level _ ->
             let starting_level = 1 in
             let starting_length = 1 in
             let starting_speed = 1 in
@@ -97,15 +118,10 @@ let run_menu () =
               (Game.init_game starting_level starting_length starting_speed
                  gravity jump_force ());
 
-            (* Check for back button click after game returns *)
-            let mouse_pos = get_mouse_position () in
-            let mouse_x = Vector2.x mouse_pos in
-            let mouse_y = Vector2.y mouse_pos in
-            if
-              mouse_x >= 20.0 && mouse_x <= 120.0 && mouse_y >= 20.0
-              && mouse_y <= 60.0
-            then LevelSelect
-            else Level n
+            LevelSelect
+        | Shop ->
+            run_shop ();
+            LevelSelect
       in
 
       end_drawing ();

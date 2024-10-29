@@ -32,15 +32,21 @@ let player = { coins = 10; bought_items = [] }
   state else if state.coins >= cost then { coins = state.coins - cost;
   bought_items = item :: state.bought_items } else state *)
 
+let check_back_button () =
+  if is_mouse_button_pressed MouseButton.Left then
+    let mouse_pos = get_mouse_position () in
+    let mouse_x = Vector2.x mouse_pos in
+    let mouse_y = Vector2.y mouse_pos in
+    mouse_x >= 20.0 && mouse_x <= 120.0 && mouse_y >= 20.0 && mouse_y <= 60.0
+  else false
+
 (* Run function to open the shop *)
 let run_shop () =
   let screen_width = 1200 in
-  let screen_height = 800 in
-  init_window screen_width screen_height "Shop";
-  set_target_fps 60;
   let player = player in
   let rec game_loop state =
     if window_should_close () then ()
+    else if check_back_button () then ()
     else begin
       begin_drawing ();
       clear_background Color.raywhite;
@@ -70,6 +76,10 @@ let run_shop () =
           (int_of_float button_width)
           (int_of_float button_height)
           color;
+
+        (* Draw back button last so it's always on top *)
+        draw_rectangle 20 20 100 40 Color.gray;
+        draw_text "Back" 45 30 20 Color.white;
 
         (* Draw Label *)
         let str =

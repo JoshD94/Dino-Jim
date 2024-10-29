@@ -1,7 +1,7 @@
 open Jim.Menu
 open Raylib
-open Jim.Game
-(*open Jim.Shop*)
+(* open Jim.Game *)
+(* open Jim.Shop *)
 
 (*let () = (* Initialize game with starting values *) let starting_level = 1 in
   let starting_length = 1 in let starting_speed = 1 in let gravity = 1.0 in let
@@ -13,5 +13,4 @@ open Jim.Game
 let () =
   run_menu ();
   close_window ()
-
-(*let () = run_shop (); close_window ()*)
+(* let () = run_shop (); close_window () *)
