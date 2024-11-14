@@ -1,0 +1,24 @@
+---
+# Members of your group.
+group:
+  - name: Evan Navar Root
+    netid: etn32
+  - name: Joshua Dirga
+    netid: jd2262
+  - name: George Margono
+    netid: gm564
+# Your PM.
+pm:
+  name: Julia Zeng
+  netid: jwz28
+# Set to false if you don't want your gallery entry to be public.
+publish: true
+# Pithy title
+title: "Jim: Heavily Modded Dino Game"
+# OK if this is a Cornell Github link, but public gallery viewers won't be able to see it.
+git-repo: "https://github.coecis.cornell.edu/etn32/Jim"
+# Replace the URL with your own demo video.
+demo-video-url: "https://youtu.be/4_HjaWmlNN0"
+# Write a short, attention-grabbing description of your project.
+desc: >
+  Jim is a heavily modded version of the Chrome Dino Game. Complete with a storyline, our protagonist Jim (the dino) is finding his way home to his family. It features different levels, a shop function, and special abilities (digging underground, flying?). The game is designed to be challenging, fun, and quirky. It is built using OCaml and the UI library Raylib. Play our game to help Jim get to his family and enjoy the intriguing storyline throughout!

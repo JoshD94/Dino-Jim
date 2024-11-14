@@ -1,0 +1,83 @@
+commit 17786d518e102d4475f30e62b8b725ec6e107862
+Author: Evan Navar Root <etn32@cornell.edu>
+Date:   Wed Oct 30 20:16:16 2024 -0400
+
+    INSTALL.md added for MS2
+
+commit 2a49ee70d4c2290a7ac7bf1522c052c0e14a2ccd
+Author: jd2262 <jd2262@cornell.edu>
+Date:   Mon Oct 28 21:02:34 2024 -0400
+
+    Added shop button to main page
+    - Fixed bug: cannot close window during game or shop, now will go back to menu page
+    - Added shop button to menu page
+
+commit 15acd4a83029f337a9dd82f8d3505b32ece3ac9e
+Author: Evan Navar Root <etn32@cornell.edu>
+Date:   Mon Oct 28 04:35:28 2024 -0400
+
+    Added base shop functionality
+
+commit 5e3da74eca9b179e1209b60d84a902cc52cf53d7
+Author: jd2262 <jd2262@cornell.edu>
+Date:   Sat Oct 26 22:40:11 2024 -0400
+
+    Implemented rolling background and connected to menu
+    - Implemented obstacles compilation unit
+    - Implemented game and menu connection
+    - Implemented game terminate when colliding with object
+
+commit ec130216df6d9f111b3d4c3efac0cdba504a736b
+Merge: 697d9a2 e1bd23d
+Author: jd2262 <jd2262@cornell.edu>
+Date:   Sat Oct 26 14:04:12 2024 -0400
+
+    Merge branch 'main' of github.coecis.cornell.edu:etn32/Jim
+
+commit 697d9a2e330cbfc96d296278767b39981a5b2852
+Author: jd2262 <jd2262@cornell.edu>
+Date:   Sat Oct 26 13:57:37 2024 -0400
+
+    Initial game commit
+    - Implemented dino jumping with gravity and jump force
+    - Implemented dino character and ground line
+    - Maximum ceiling and ground constraints
+
+commit e1bd23d7b3a9657a4b53caf36488906fb760acab
+Merge: 05eb7d7 3feb7a8
+Author: George Margono <gm564@cornell.edu>
+Date:   Sat Oct 26 13:05:11 2024 -0400
+
+    Merge branch 'main' of github.coecis.cornell.edu:etn32/Jim
+
+commit 05eb7d7eef400e5ac5aefc0350c78bec9fe9e2f5
+Author: George Margono <gm564@cornell.edu>
+Date:   Sat Oct 26 13:02:35 2024 -0400
+
+    Initial Menu Commit
+    - implemented menu.ml
+    - added run_menu to main.ml
+
+commit 3feb7a80167c360517111bee0c05302377bf1d59
+Author: jd2262 <jd2262@cornell.edu>
+Date:   Wed Oct 9 21:17:41 2024 -0400
+
+    Added name and netidd to readme
+
+commit 80ab29cfc64f7a325682a2011c3220b3ceaeecbc
+Author: George Margono <gm564@cornell.edu>
+Date:   Wed Oct 9 21:14:34 2024 -0400
+
+    Initial commit
+
+commit f2f80ceff536175dcb6e595989743a9540edd0ba
+Author: Evan Navar Root <etn32@cornell.edu>
+Date:   Wed Oct 9 21:00:27 2024 -0400
+
+    readme
+
+commit 2097823095a9be3045aa8417654c94d97bb6dedf
+Author: Evan Navar Root <etn32@cornell.edu>
+Date:   Wed Oct 9 20:54:27 2024 -0400
+
+    Initial Commit

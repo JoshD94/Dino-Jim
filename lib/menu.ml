@@ -197,7 +197,7 @@ let run_menu () =
 
             ignore
               (Game.init_game starting_level starting_length starting_speed
-                 gravity jump_force ());
+                 gravity jump_force "lava" ());
 
             LevelSelect
         | Shop ->

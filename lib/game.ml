@@ -95,7 +95,7 @@ let render state =
   end_drawing ()
 
 (* Main game initialization and loop *)
-let init_game lvl len speed_mul gravity jump_force () =
+let init_game lvl len speed_mul gravity jump_force biome () =
   print_endline
     (string_of_int lvl ^ " " ^ string_of_int len ^ " " ^ string_of_int speed_mul
    ^ " " ^ string_of_float gravity ^ " " ^ string_of_float jump_force);
@@ -103,7 +103,7 @@ let init_game lvl len speed_mul gravity jump_force () =
   let initial_state =
     {
       pos = { x = 100.0; y = 350.0; velocity_y = 0.0 };
-      obstacles = Obstacle.init_obstacles ();
+      obstacles = Obstacle.init_obstacles biome ();
       speed = initial_speed;
     }
   in
@@ -115,7 +115,7 @@ let init_game lvl len speed_mul gravity jump_force () =
     else
       (* Update game state *)
       let new_pos = update_position state.pos gravity jump_force in
-      let new_obstacles = Obstacle.update state.obstacles state.speed in
+      let new_obstacles = Obstacle.update state.obstacles state.speed biome in
 
       (* Check for collision *)
       let collided =
