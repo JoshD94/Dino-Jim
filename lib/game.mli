@@ -27,7 +27,8 @@ val jump_force : float
 val gravity : float
 (** Gravity constant for game physics*)
 
-val init_game : int -> int -> int -> float -> float -> string -> unit -> unit
+val init_game :
+  int -> int -> int -> float -> float -> string -> Player.t -> unit -> unit
 (** Initialize and start the game with given parameters
     @param lvl Game level
     @param len Game length
@@ -43,6 +44,6 @@ val update_position : position -> float -> float -> position
     @param jf Jump force constant
     @return New position *)
 
-val render : game_state -> unit
+val render : game_state -> Player.t -> unit
 (** Render game state
     @param state Current game state *)

@@ -12,7 +12,7 @@ type t = {
 let create () =
   {
     current_skin = Skins.DefaultSkin.draw;
-    coins = 0;
+    coins = 10;
     skins = [ Skins.DefaultSkin.draw ];
     jump_height = 1;
     speed = 1;

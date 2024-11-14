@@ -1,5 +1,6 @@
 open Jim.Menu
 open Raylib
+open Jim.Player
 (* open Jim.Game *)
 (* open Jim.Shop *)
 
@@ -10,7 +11,9 @@ open Raylib
   init_game starting_level starting_length starting_speed gravity jump_force
   ()*)
 
+let player = create ()
+
 let () =
-  run_menu ();
+  run_menu player;
   close_window ()
 (* let () = run_shop (); close_window () *)

@@ -18,7 +18,6 @@ type game_state = {
 let level = 0
 let length = 0
 let initial_speed = 5.0
-let color = Color.gray
 let jump_force = -20.0
 let speed_up_multiplier = 1
 let gravity = 0.8
@@ -54,7 +53,7 @@ let update_position pos g jump_force =
     { x = pos.x; y = 350. -. jump_height; velocity_y = 0.0 } (* Hit ceiling *)
   else { x = pos.x; y = new_y; velocity_y = new_velocity }
 
-let render state =
+let render state player =
   begin_drawing ();
   clear_background Color.raywhite;
 
@@ -65,28 +64,9 @@ let render state =
   Obstacle.render state.obstacles;
 
   let pos = state.pos in
-  (* Main body *)
-  draw_rectangle (int_of_float pos.x) (int_of_float pos.y + 20) 20 30 color;
 
-  (* Head *)
-  draw_rectangle (int_of_float pos.x) (int_of_float pos.y + 5) 30 15 color;
-  draw_rectangle (int_of_float pos.x + 5) (int_of_float pos.y) 25 20 color;
-
-  (* Legs *)
-  draw_rectangle (int_of_float pos.x) (int_of_float pos.y + 50) 5 10 color;
-  draw_rectangle (int_of_float pos.x + 15) (int_of_float pos.y + 50) 5 10 color;
-
-  (* Tail *)
-  draw_rectangle (int_of_float pos.x - 5) (int_of_float pos.y + 35) 5 15 color;
-  draw_rectangle (int_of_float pos.x - 10) (int_of_float pos.y + 40) 5 15 color;
-  draw_rectangle (int_of_float pos.x - 15) (int_of_float pos.y + 45) 5 10 color;
-  draw_rectangle (int_of_float pos.x - 20) (int_of_float pos.y + 50) 5 5 color;
-
-  (* Eye *)
-  draw_rectangle
-    (int_of_float pos.x + 18)
-    (int_of_float pos.y + 5)
-    3 3 Color.black;
+  (* Draw current skin *)
+  (Player.current_skin player) pos.x pos.y;
 
   (* Draw back button last so it's always on top *)
   draw_rectangle 20 20 100 40 Color.gray;
@@ -95,7 +75,7 @@ let render state =
   end_drawing ()
 
 (* Main game initialization and loop *)
-let init_game lvl len speed_mul gravity jump_force biome () =
+let init_game lvl len speed_mul gravity jump_force biome player () =
   print_endline
     (string_of_int lvl ^ " " ^ string_of_int len ^ " " ^ string_of_int speed_mul
    ^ " " ^ string_of_float gravity ^ " " ^ string_of_float jump_force);
@@ -109,7 +89,7 @@ let init_game lvl len speed_mul gravity jump_force biome () =
   in
 
   (* Main game loop *)
-  let rec game_loop state =
+  let rec game_loop state player =
     if window_should_close () then ()
     else if check_back_button () then ()
     else
@@ -130,12 +110,12 @@ let init_game lvl len speed_mul gravity jump_force biome () =
         in
 
         (* Render *)
-        render new_state;
+        render new_state player;
 
         (* Continue loop *)
-        game_loop new_state
+        game_loop new_state player
       end
   in
 
   (* Start the game loop *)
-  game_loop initial_state
+  game_loop initial_state player

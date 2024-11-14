@@ -13,7 +13,7 @@ type game_state =
   | Shop
 
 (* Run function to start the menu *)
-let run_menu () =
+let run_menu player =
   let screen_width = 1200 in
   let screen_height = 800 in
   init_window screen_width screen_height "Level Select";
@@ -38,11 +38,11 @@ let run_menu () =
               ((screen_width - title_width) / 2)
               40 title_size Color.black;
 
-            (* Draw shop button *)
+            (* Draw level button *)
             draw_rectangle 800 100 100 40 Color.gray;
             draw_text "Shop" 825 110 20 Color.white;
 
-            (* Check for shop button click *)
+            (* Check for level button click *)
             let shop_clicked = ref false in
             if is_mouse_button_pressed MouseButton.Left then begin
               let mouse_pos = get_mouse_position () in
@@ -116,11 +116,11 @@ let run_menu () =
             (* Run game *)
             ignore
               (Game.init_game starting_level starting_length starting_speed
-                 gravity jump_force "lava" ());
+                 gravity jump_force "grass" player ());
 
             LevelSelect
         | Shop ->
-            run_shop ();
+            run_shop player;
             LevelSelect
       in
 

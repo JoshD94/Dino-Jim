@@ -1,5 +1,5 @@
 open Raylib
-(*open Player*)
+open Player
 
 let button_height = 80.0
 let button_width = 160.0
@@ -9,14 +9,17 @@ let num_items = 7
 
 let buyable_items =
   [|
-    ("High Jump", 0);
-    ("Boost", 0);
-    ("Extra Coins", 0);
+    ("Jump", 0);
+    ("Speed", 0);
+    ("More coins", 0);
     ("Skin 1", 0);
     ("Skin 2", 2);
     ("Skin 3", 2);
     ("Chest", 10);
   |]
+
+let buyable_skins =
+  [| Skins.DefaultSkin.draw; Skins.DefaultSkin.draw; Skins.DefaultSkin.draw |]
 
 let bought_items = [| false; false; false; false; false; false; false |]
 
@@ -44,7 +47,7 @@ let check_back_button () =
   else false
 
 (* Run function to open the shop *)
-let run_shop () =
+let run_shop player =
   let screen_width = 1200 in
   let player = player in
   let rec game_loop state =
@@ -98,7 +101,7 @@ let run_shop () =
         let text_y = y +. ((button_height -. float_of_int text_size) /. 2.0) in
         draw_text str (int_of_float text_x) (int_of_float text_y) text_size
           Color.black;
-        let coin_amount_str = "Coins: " ^ string_of_int state.coins in
+        let coin_amount_str = "Coins: " ^ string_of_int (coins state) in
         draw_text coin_amount_str
           (screen_width - measure_text coin_amount_str 25 - 10)
           20 25 Color.black;
@@ -114,11 +117,12 @@ let run_shop () =
             && mouse_y >= y
             && mouse_y <= y +. button_height
             && bought_items.(i) = false
-            && state.coins >= snd buyable_items.(i)
+            && coins state >= snd buyable_items.(i)
           then (
-            state.coins <- state.coins - snd buyable_items.(i);
-            state.bought_items <- fst buyable_items.(i) :: state.bought_items;
-            bought_items.(i) <- true)
+            add_coins state (0 - snd buyable_items.(i));
+            bought_items.(i) <- true;
+            if i < 3 then add_powerup state (fst buyable_items.(i));
+            if i > 2 && i < 6 then add_skin state buyable_skins.(i - 3))
         end
       done;
 

@@ -12,4 +12,4 @@ type player_state = {
 }
 
 val player : player_state
-val run_shop : unit -> unit
+val run_shop : Player.t -> unit
