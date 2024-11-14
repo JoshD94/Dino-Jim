@@ -27,13 +27,14 @@ val jump_force : float
 val gravity : float
 (** Gravity constant for game physics*)
 
-val init_game : int -> int -> int -> float -> float -> unit -> unit
+val init_game : int -> int -> int -> float -> float -> string -> unit -> unit
 (** Initialize and start the game with given parameters
     @param lvl Game level
     @param len Game length
     @param spd Game speed multiplier
     @param g Gravity constant
-    @param jf Jump force constant *)
+    @param jf Jump force constant
+    @param biome Biome type *)
 
 val update_position : position -> float -> float -> position
 (** Update position based on input
