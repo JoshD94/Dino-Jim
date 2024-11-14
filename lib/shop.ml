@@ -1,10 +1,11 @@
 open Raylib
+(*open Player*)
 
 let button_height = 80.0
 let button_width = 160.0
-let padding = 100.0
-let grid_cols = 3
-let num_items = 6
+let padding = 120.0
+let grid_cols = 4
+let num_items = 7
 
 let buyable_items =
   [|
@@ -14,15 +15,17 @@ let buyable_items =
     ("Skin 1", 0);
     ("Skin 2", 2);
     ("Skin 3", 2);
+    ("Chest", 10);
   |]
 
-let bought_items = [| false; false; false; false; false; false |]
+let bought_items = [| false; false; false; false; false; false; false |]
 
 type player_state = {
   mutable coins : int;
   mutable bought_items : string list;
 }
 
+(*let player = Player.create ()*)
 let player = { coins = 10; bought_items = [] }
 
 (*let rec check_item lst item = match lst with | [] -> false | h :: t -> if item
@@ -59,16 +62,16 @@ let run_shop () =
         ((screen_width - title_width) / 2)
         40 title_size Color.black;
 
-      (* Draw level buttons *)
+      (* Draw shop buttons *)
       for i = 0 to num_items - 1 do
         let row = float_of_int (i / grid_cols) in
         let col = float_of_int (i mod grid_cols) in
         let x =
-          (800.0 -. (float_of_int grid_cols *. (button_width +. padding)))
+          (1200.0 -. (float_of_int grid_cols *. (button_width +. padding)))
           /. 2.0
           +. (col *. (button_width +. padding))
         in
-        let y = 120.0 +. (row *. (button_height +. padding)) in
+        let y = 160.0 +. (row *. (button_height +. padding)) in
 
         (* Draw button *)
         let color = if bought_items.(i) then Color.maroon else Color.red in
@@ -76,7 +79,8 @@ let run_shop () =
           (int_of_float button_width)
           (int_of_float button_height)
           color;
-
+        (* Draw Skins *)
+        if i = 3 then Skins.DefaultSkin.draw (x +. 75.) (y -. 65.);
         (* Draw back button last so it's always on top *)
         draw_rectangle 20 20 100 40 Color.gray;
         draw_text "Back" 45 30 20 Color.white;
