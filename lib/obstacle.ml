@@ -17,53 +17,60 @@ type obstacle_dimensions = {
 
 (* Obstacle dimensions *)
 let cactus =
-  { min_height = 20.0; max_height = 40.0; min_width = 10.0; max_width = 20.0 }
+  { min_height = 40.0; max_height = 60.0; min_width = 10.0; max_width = 30.0 }
 
 let rock =
-  { min_height = 10.0; max_height = 20.0; min_width = 20.0; max_width = 40.0 }
+  { min_height = 20.0; max_height = 40.0; min_width = 30.0; max_width = 50.0 }
 
 let tree =
-  { min_height = 50.0; max_height = 70.0; min_width = 10.0; max_width = 15.0 }
+  { min_height = 60.0; max_height = 90.0; min_width = 10.0; max_width = 25.0 }
 
 let bush =
-  { min_height = 5.0; max_height = 15.0; min_width = 5.0; max_width = 10.0 }
+  { min_height = 10.0; max_height = 30.0; min_width = 10.0; max_width = 30.0 }
 
 let snowman =
   { min_height = 30.0; max_height = 50.0; min_width = 15.0; max_width = 25.0 }
 
 let ice =
-  { min_height = 10.0; max_height = 20.0; min_width = 20.0; max_width = 30.0 }
+  { min_height = 10.0; max_height = 20.0; min_width = 20.0; max_width = 40.0 }
 
-let hole =
-  { min_height = 5.0; max_height = 15.0; min_width = 20.0; max_width = 30.0 }
+let evergreen =
+  { min_height = 30.0; max_height = 40.0; min_width = 15.0; max_width = 20.0 }
 
 let boulder =
-  { min_height = 20.0; max_height = 40.0; min_width = 30.0; max_width = 50.0 }
+  { min_height = 70.0; max_height = 80.0; min_width = 70.0; max_width = 80.0 }
 
 let wall =
-  { min_height = 40.0; max_height = 60.0; min_width = 20.0; max_width = 40.0 }
+  { min_height = 60.0; max_height = 70.0; min_width = 20.0; max_width = 40.0 }
 
 let lava =
-  { min_height = 10.0; max_height = 30.0; min_width = 20.0; max_width = 40.0 }
+  { min_height = 10.0; max_height = 20.0; min_width = 60.0; max_width = 100.0 }
 
 let asteroid =
-  { min_height = 15.0; max_height = 35.0; min_width = 20.0; max_width = 30.0 }
+  { min_height = 30.0; max_height = 80.0; min_width = 30.0; max_width = 80.0 }
 
 let fire =
-  { min_height = 10.0; max_height = 25.0; min_width = 10.0; max_width = 20.0 }
+  { min_height = 60.0; max_height = 80.0; min_width = 60.0; max_width = 80.0 }
 
 let spike =
-  { min_height = 5.0; max_height = 15.0; min_width = 5.0; max_width = 10.0 }
+  { min_height = 30.0; max_height = 70.0; min_width = 20.0; max_width = 40.0 }
 
 (* Obstacle types *)
 let grass =
   [| (cactus, "cactus"); (rock, "rock"); (tree, "tree"); (bush, "bush") |]
 
 let snow =
-  [| (snowman, "snowman"); (ice, "ice"); (rock, "rock"); (hole, "hole") |]
+  [|
+    (snowman, "snowman"); (ice, "ice"); (rock, "rock"); (evergreen, "evergreen");
+  |]
 
 let rock =
-  [| (rock, "rock"); (boulder, "boulder"); (wall, "wall"); (hole, "hole") |]
+  [|
+    (rock, "rock");
+    (boulder, "boulder");
+    (wall, "wall");
+    (evergreen, "evergreen");
+  |]
 
 let lava =
   [| (lava, "lava"); (asteroid, "asteroid"); (fire, "fire"); (spike, "spike") |]
@@ -188,11 +195,18 @@ let draw_obstacle (obs : obstacle) =
       draw_rectangle (int_of_float obs.x) (int_of_float obs.y)
         (int_of_float obs.width) (int_of_float obs.height)
         (Color.create 128 128 128 255);
-      (* Shadow detail *)
+      (* Color detail *)
       draw_rectangle
         (int_of_float (obs.x +. (obs.width /. 4.)))
         (int_of_float (obs.y +. (obs.height /. 3.)))
         (int_of_float (obs.width /. 3.))
+        (int_of_float (obs.height /. 3.))
+        (Color.create 90 90 90 255);
+      (* Color detail *)
+      draw_rectangle
+        (int_of_float (obs.x +. (obs.width /. 2.)))
+        (int_of_float (obs.y +. (obs.height /. 2.)))
+        (int_of_float (obs.width /. 2.))
         (int_of_float (obs.height /. 3.))
         (Color.create 90 90 90 255)
   | "tree" ->
@@ -204,8 +218,10 @@ let draw_obstacle (obs : obstacle) =
         (int_of_float (obs.height *. 2. /. 3.))
         (Color.create 139 69 19 255);
       (* Leaves *)
-      draw_rectangle (int_of_float obs.x) (int_of_float obs.y)
-        (int_of_float obs.width)
+      draw_rectangle
+        (int_of_float (obs.x -. (obs.width /. 2.)))
+        (int_of_float obs.y)
+        (int_of_float (obs.width *. 2.))
         (int_of_float (obs.height /. 2.))
         (Color.create 34 139 34 255)
   | "bush" ->
@@ -215,32 +231,33 @@ let draw_obstacle (obs : obstacle) =
         (Color.create 34 139 34 255);
       (* Bush detail *)
       draw_rectangle
-        (int_of_float (obs.x -. (obs.width /. 4.)))
-        (int_of_float (obs.y +. (obs.height /. 4.)))
-        (int_of_float (obs.width /. 2.))
-        (int_of_float (obs.height /. 2.))
-        (Color.create 0 100 0 255)
+        (int_of_float (obs.x +. (obs.width /. 2.)))
+        (int_of_float (obs.y -. (obs.height *. 1.6) +. obs.height))
+        (int_of_float (obs.width *. 2.4))
+        (int_of_float (obs.height *. 1.6))
+        (Color.create 34 139 34 255)
   | "snowman" ->
       (* Bottom sphere *)
       draw_rectangle (int_of_float obs.x)
         (int_of_float (obs.y +. (obs.height *. 0.6)))
         (int_of_float obs.width)
         (int_of_float (obs.height *. 0.4))
-        (Color.create 255 255 255 255);
+        (Color.create 105 217 255 255);
       (* Middle sphere *)
       draw_rectangle
         (int_of_float (obs.x +. (obs.width *. 0.1)))
         (int_of_float (obs.y +. (obs.height *. 0.3)))
         (int_of_float (obs.width *. 0.8))
         (int_of_float (obs.height *. 0.3))
-        (Color.create 255 255 255 255);
+        (Color.create 105 217 255 255);
       (* Head *)
       draw_rectangle
         (int_of_float (obs.x +. (obs.width *. 0.2)))
         (int_of_float obs.y)
         (int_of_float (obs.width *. 0.6))
         (int_of_float (obs.height *. 0.3))
-        (Color.create 255 255 255 255)
+        (Color.create 105 217 255 255)
+      (* Border *)
   | "ice" ->
       (* Main ice block *)
       draw_rectangle (int_of_float obs.x) (int_of_float obs.y)
@@ -252,28 +269,45 @@ let draw_obstacle (obs : obstacle) =
         (int_of_float (obs.y +. (obs.height *. 0.2)))
         (int_of_float (obs.width *. 0.2))
         (int_of_float (obs.height *. 0.2))
-        (Color.create 255 255 255 150)
-  | "hole" ->
-      (* Main hole *)
+        (Color.create 255 255 255 200)
+  | "evergreen" ->
+      (* Main tree body *)
       draw_rectangle (int_of_float obs.x) (int_of_float obs.y)
         (int_of_float obs.width) (int_of_float obs.height)
-        (Color.create 0 0 0 255)
+        (Color.create 139 69 19 255);
+      (* Tree top *)
+      draw_triangle
+        (Vector2.create
+           (obs.x +. (obs.width /. 2.))
+           (obs.y -. (obs.height *. 2.)))
+        (Vector2.create
+           (obs.x -. (obs.width /. 2.))
+           (obs.y +. (obs.height *. 0.3)))
+        (Vector2.create
+           (obs.x +. obs.width +. (obs.width /. 2.))
+           (obs.y +. (obs.height *. 0.3)))
+        (Color.create 34 139 34 255)
   | "boulder" ->
-      (* Main boulder *)
+      (* Main boulder body *)
       draw_rectangle (int_of_float obs.x) (int_of_float obs.y)
         (int_of_float obs.width) (int_of_float obs.height)
-        (Color.create 169 169 169 255);
-      (* Cracks *)
-      draw_line (int_of_float obs.x)
-        (int_of_float (obs.y +. (obs.height /. 2.)))
-        (int_of_float (obs.x +. obs.width))
-        (int_of_float (obs.y +. (obs.height /. 3.)))
-        (Color.create 105 105 105 255)
+        (Color.create 128 128 128 255);
+      (* Boulder details *)
+      draw_circle
+        (int_of_float (obs.x +. (obs.width *. 0.3)))
+        (int_of_float (obs.y +. (obs.height *. 0.3)))
+        (float_of_int 5)
+        (Color.create 90 90 90 255);
+      draw_circle
+        (int_of_float (obs.x +. (obs.width *. 0.7)))
+        (int_of_float (obs.y +. (obs.height *. 0.6)))
+        (float_of_int 3)
+        (Color.create 90 90 90 255)
   | "wall" ->
       (* Main wall *)
       draw_rectangle (int_of_float obs.x) (int_of_float obs.y)
         (int_of_float obs.width) (int_of_float obs.height)
-        (Color.create 139 69 19 255);
+        (Color.create 87 10 23 255);
       (* Brick pattern *)
       for i = 0 to 2 do
         draw_line (int_of_float obs.x)
@@ -310,25 +344,39 @@ let draw_obstacle (obs : obstacle) =
         (float_of_int 3)
         (Color.create 90 90 90 255)
   | "fire" ->
-      (* Base of fire *)
-      draw_rectangle (int_of_float obs.x) (int_of_float obs.y)
-        (int_of_float obs.width) (int_of_float obs.height)
-        (Color.create 255 69 0 255);
-      (* Flame top *)
+      for _ = 0 to 7 do
+        let x = Random.float obs.width in
+        let y = Random.float obs.height in
+        let r = 3 + Random.int 3 in
+        draw_circle
+          (int_of_float (obs.x +. x))
+          (int_of_float (obs.y +. y))
+          (float_of_int r)
+          (Color.create 255 69 0 255);
+        (* Draw base *)
+        draw_rectangle (int_of_float obs.x)
+          (int_of_float (obs.y +. obs.height))
+          (int_of_float obs.width) (int_of_float 2.) (Color.create 92 13 5 255)
+      done
+  | "spike" ->
+      (* Main spike body *)
+      draw_triangle
+        (Vector2.create (obs.x +. (obs.width /. 2.)) (obs.y -. obs.height))
+        (Vector2.create obs.x (obs.y +. obs.height))
+        (Vector2.create (obs.x +. obs.width) (obs.y +. obs.height))
+        (Color.create 90 90 90 255);
+      (* Second spike *)
       draw_triangle
         (Vector2.create
-           (obs.x +. (obs.width /. 2.))
-           (obs.y -. (obs.height *. 0.3)))
-        (Vector2.create obs.x (obs.y +. (obs.height *. 0.3)))
-        (Vector2.create (obs.x +. obs.width) (obs.y +. (obs.height *. 0.3)))
-        (Color.create 255 165 0 255)
-  | "spike" ->
-      (* Spike base *)
-      draw_triangle
-        (Vector2.create obs.x (obs.y +. obs.height))
-        (Vector2.create (obs.x +. (obs.width /. 2.)) obs.y)
-        (Vector2.create (obs.x +. obs.width) (obs.y +. obs.height))
-        (Color.create 169 169 169 255)
+           (obs.x +. (obs.width *. 1.) +. (obs.width /. 2.))
+           (obs.y -. (obs.height /. 2.5)))
+        (Vector2.create
+           (obs.x +. (obs.width *. 1.) +. (obs.width /. 4.))
+           (obs.y +. obs.height))
+        (Vector2.create
+           (obs.x +. (obs.width *. 1.) +. (obs.width *. 0.75))
+           (obs.y +. obs.height))
+        (Color.create 90 90 90 255)
   | _ ->
       (* Default fallback drawing *)
       draw_rectangle (int_of_float obs.x) (int_of_float obs.y)

@@ -197,7 +197,7 @@ let run_menu player =
 
             ignore
               (Game.init_game starting_level starting_length starting_speed
-                 gravity jump_force "grass" player ());
+                 gravity jump_force "lava" player ());
 
             LevelSelect
         | Shop ->
