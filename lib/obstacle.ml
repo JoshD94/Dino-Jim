@@ -3,7 +3,6 @@ open ObstacleType
 
 type t = obstacle
 
-(* Constants *)
 let min_spacing = 300.0
 let max_spacing = 500.0
 let ground_y = 410.0
@@ -135,25 +134,54 @@ let create x biome =
     in
     { x; y = ground_y -. height; width; height; name = snd grass.(random_num) }
 
-(* Create initial set of obstacles *)
-let init_obstacles biome () = [ create (1200.0 +. safe_start_distance) biome ]
+type obstacle_state = {
+  spawned_count : int;
+  total_count : int;
+  passed_count : int;
+}
 
-(* Update obstacle positions based on game speed *)
+let obstacle_tracking =
+  ref { spawned_count = 1; total_count = 0; passed_count = 0 }
+
+let get_passed_count () = !obstacle_tracking.passed_count
+
+let init_obstacles biome total () =
+  obstacle_tracking :=
+    { spawned_count = 1; total_count = total; passed_count = 0 };
+  [ create (1200.0 +. safe_start_distance) biome ]
+
 let update obstacles speed biome =
   (* Move obstacles left *)
   let moved = List.map (fun obs -> { obs with x = obs.x -. speed }) obstacles in
 
-  (* Remove obstacles that are off screen *)
+  (* Count obstacles that went off screen *)
   let active = List.filter (fun obs -> obs.x +. obs.width > 0.0) moved in
+  let passed = List.length moved - List.length active in
 
-  (* Add new obstacle if needed *)
+  (* Update passed count in our state *)
+  obstacle_tracking :=
+    {
+      !obstacle_tracking with
+      passed_count = !obstacle_tracking.passed_count + passed;
+    };
+
+  (* Add new obstacle if needed and we haven't spawned all obstacles yet *)
   let rightmost =
     List.fold_left
       (fun max_x obs -> if obs.x > max_x then obs.x else max_x)
       0.0 active
   in
 
-  if rightmost < 1200.0 -. min_spacing then create 1200.0 biome :: active
+  if
+    rightmost < 1200.0 -. min_spacing
+    && !obstacle_tracking.spawned_count < !obstacle_tracking.total_count
+  then (
+    obstacle_tracking :=
+      {
+        !obstacle_tracking with
+        spawned_count = !obstacle_tracking.spawned_count + 1;
+      };
+    create 1200.0 biome :: active)
   else active
 
 (* Check collision between player and obstacles *)

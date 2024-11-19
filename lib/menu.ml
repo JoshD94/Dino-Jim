@@ -22,12 +22,18 @@ let total_height = float_of_int num_levels *. level_spacing
 let screen_width = 1200
 let screen_height = 800
 let top_padding = 90.0
+let calculate_obstacle_count level = 10 + ((level - 1) * 5)
+
+let get_biome_for_level level =
+  if level <= 3 then "grass"
+  else if level <= 6 then "rock"
+  else if level <= 9 then "snow"
+  else "lava"
 
 let get_path_points scroll_y =
   Array.init num_levels (fun i ->
       let base_y = float_of_int i *. level_spacing in
       let adjusted_y = base_y -. scroll_y +. top_padding in
-      (* Added top padding *)
       if i mod 2 = 0 then (400.0, adjusted_y +. 100.0)
       else (800.0, adjusted_y +. 100.0))
 
@@ -53,7 +59,6 @@ let draw_title () =
   let title_size = 40 in
   let title_width = measure_text title title_size in
 
-  (* Draw a white rectangle behind the title *)
   let padding = 20 in
   let bg_rect_width = title_width + (padding * 2) in
   let bg_rect_height = title_size + padding in
@@ -72,15 +77,16 @@ let draw_level_bubble level_num (x, y) unlocked =
     (int_of_float (y +. 2.0))
     radius (Color.create 0 0 0 40);
 
-  (* Draw main circle with biome-specific colors *)
+  (* Draw main circle with biome colors *)
   let color =
     if not unlocked then Color.lightgray
     else
-      match (level_num - 1) / 3 with
-      | 0 -> Color.create 34 139 34 255 (* Forest Green *)
-      | 1 -> Color.create 218 165 32 255 (* Desert Gold *)
-      | 2 -> Color.create 135 206 235 255 (* Ice Blue *)
-      | _ -> Color.create 178 34 34 255 (* Volcano Red *)
+      match get_biome_for_level level_num with
+      | "grass" -> Color.create 34 139 34 255 (* Forest Green *)
+      | "rock" -> Color.create 128 128 128 255 (* Rock Gray *)
+      | "snow" -> Color.create 135 206 235 255 (* Ice Blue *)
+      | "lava" -> Color.create 178 34 34 255 (* Lava Red *)
+      | _ -> Color.lightgray
   in
   draw_circle (int_of_float x) (int_of_float y) radius color;
 
@@ -122,7 +128,6 @@ let update_scroll scroll_state =
   scroll_state.scroll_y <-
     max 0.0 (min scroll_state.scroll_y scroll_state.max_scroll)
 
-(* menu.ml *)
 let run_menu player =
   init_window screen_width screen_height "Level Select";
   set_target_fps 60;
@@ -146,8 +151,6 @@ let run_menu player =
         match state with
         | LevelSelect ->
             clear_background Color.raywhite;
-
-            (* Draw the pixel art background *)
             Background.draw scroll_state.scroll_y screen_width screen_height;
 
             let points = get_path_points scroll_state.scroll_y in
@@ -188,16 +191,17 @@ let run_menu player =
                 | None -> LevelSelect
             end
             else LevelSelect
-        | Level _ ->
-            let starting_level = 1 in
-            let starting_length = 1 in
+        | Level n ->
+            let obstacle_count = calculate_obstacle_count n in
+            let starting_level = n in
             let starting_speed = 1 in
             let gravity = 1.0 in
             let jump_force = -18.0 in
+            let biome = get_biome_for_level n in
 
             ignore
-              (Game.init_game starting_level starting_length starting_speed
-                 gravity jump_force "lava" player ());
+              (Game.init_game starting_level obstacle_count starting_speed
+                 gravity jump_force biome player ());
 
             LevelSelect
         | Shop ->

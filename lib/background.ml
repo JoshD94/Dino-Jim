@@ -1,42 +1,38 @@
 open Raylib
 
-(* Biome colors stored as (r,g,b) tuples *)
-let forest_rgb = (34, 139, 34)
-let desert_rgb = (218, 165, 32)
-let ice_rgb = (135, 206, 235)
-let volcano_rgb = (178, 34, 34)
+let grass_rgb = (206, 255, 194) (* Light green *)
+let rock_rgb = (117, 117, 117) (* Light gray *)
+let snow_rgb = (189, 251, 255) (* Light blue *)
+let lava_rgb = (255, 158, 120) (* Light orange *)
 
 (* Helper for linear interpolation of a single number *)
 let lerp a b t =
   let t = max 0.0 (min 1.0 t) in
   (a *. (1.0 -. t)) +. (b *. t)
 
+(* Get biome based on level number *)
+let get_biome_for_level level =
+  if level <= 3 then grass_rgb
+  else if level <= 6 then rock_rgb
+  else if level <= 9 then snow_rgb
+  else lava_rgb
+
 (* Draw the background with gradual color transitions *)
 let draw scroll_y screen_width screen_height =
-  let levels_per_biome = 3 in
   let level_height = float_of_int screen_height *. 0.333 in
-  let biome_height = level_height *. float_of_int levels_per_biome in
 
-  (* Calculate current biome and transition progress *)
-  let biome_position = scroll_y /. biome_height in
-  let current_biome = int_of_float biome_position in
-  let transition_progress = biome_position -. float_of_int current_biome in
+  (* Calculate current level and transition progress *)
+  let level_position = scroll_y /. level_height in
+  let current_level = int_of_float level_position + 1 in
+  let next_level = current_level + 1 in
 
-  (* Get current and next RGB values *)
-  let current_rgb =
-    match current_biome mod 4 with
-    | 0 -> forest_rgb
-    | 1 -> desert_rgb
-    | 2 -> ice_rgb
-    | _ -> volcano_rgb
-  in
+  (* Get RGB values for current and next levels *)
+  let current_rgb = get_biome_for_level current_level in
+  let next_rgb = get_biome_for_level next_level in
 
-  let next_rgb =
-    match (current_biome + 1) mod 4 with
-    | 0 -> forest_rgb
-    | 1 -> desert_rgb
-    | 2 -> ice_rgb
-    | _ -> volcano_rgb
+  (* Calculate transition progress within the level *)
+  let transition_progress =
+    level_position -. float_of_int (current_level - 1)
   in
 
   (* Get RGB components *)
