@@ -127,7 +127,7 @@ let render state player =
 
   let pos = state.pos in
   (* current skin *)
-  (Player.current_skin player) pos.x pos.y;
+  ignore ((Player.current_skin player) pos.x pos.y);
 
   (* progress *)
   let progress_text =
