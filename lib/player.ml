@@ -1,11 +1,11 @@
 type t = {
-  mutable current_skin : float -> float -> unit;
+  mutable current_skin : float -> float -> int;
   mutable coins : int;
-  mutable skins : (float -> float -> unit) list;
+  mutable skins : (float -> float -> int) list;
   mutable jump_height : int;
   mutable speed : int;
   mutable coin_multiplier : int;
-  mutable buyable_skins : (float -> float -> unit) list;
+  mutable buyable_skins : (float -> float -> int) list;
   mutable powerups : string list;
 }
 
@@ -17,14 +17,15 @@ let create () =
     jump_height = 1;
     speed = 1;
     coin_multiplier = 1;
-    buyable_skins = [];
+    buyable_skins = [ Skins.SantaSkin.draw ];
     powerups = [];
   }
 
-let rec remove_from_buyable skin_list skin =
+let rec remove_from_buyable skin_list (skin : float -> float -> int) =
   match skin_list with
   | [] -> []
-  | h :: t -> if h = skin then t else h :: remove_from_buyable t skin
+  | h :: t ->
+      if h 0. 0. = skin 0. 0. then t else h :: remove_from_buyable t skin
 
 let add_coins t coins = t.coins <- t.coins + coins
 
@@ -57,7 +58,7 @@ let current_skin t = t.current_skin
 let rec skin_in_list lst skin =
   match lst with
   | [] -> false
-  | h :: t -> if h = skin then true else skin_in_list t skin
+  | h :: t -> if h 0. 0. = skin 0. 0. then true else skin_in_list t skin
 
 let select_skin t skin =
   if skin_in_list t.skins skin then t.current_skin <- skin

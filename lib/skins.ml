@@ -1,7 +1,7 @@
 open Raylib
 
 module type Skin = sig
-  val draw : float -> float -> unit
+  val draw : float -> float -> int
 end
 
 module DefaultSkin : Skin = struct
@@ -24,7 +24,9 @@ module DefaultSkin : Skin = struct
     draw_rectangle (int_of_float x - 20) (int_of_float y + 50) 5 5 color;
 
     (* Eye *)
-    draw_rectangle (int_of_float x + 18) (int_of_float y + 5) 3 3 Color.black
+    draw_rectangle (int_of_float x + 18) (int_of_float y + 5) 3 3 Color.black;
+    (* Unique Skin Identifier *)
+    0
 end
 
 module SantaSkin : Skin = struct
@@ -56,5 +58,7 @@ module SantaSkin : Skin = struct
     draw_rectangle (int_of_float x + 2) (int_of_float y - 15) 20 10 Color.red;
     draw_rectangle (int_of_float x + 3) (int_of_float y - 20) 10 10 Color.red;
     draw_circle (int_of_float x + 5) (int_of_float y - 23) 5. Color.black;
-    draw_circle (int_of_float x + 5) (int_of_float y - 23) 2. Color.white
+    draw_circle (int_of_float x + 5) (int_of_float y - 23) 2. Color.white;
+    (* Unique Skin Identifier *)
+    1
 end

@@ -83,7 +83,7 @@ let run_shop player =
           (int_of_float button_height)
           color;
         (* Draw Skins *)
-        if i = 3 then Skins.DefaultSkin.draw (x +. 75.) (y -. 65.);
+        if i = 3 then ignore (Skins.DefaultSkin.draw (x +. 75.) (y -. 65.));
         (* Draw back button last so it's always on top *)
         draw_rectangle 20 20 100 40 Color.gray;
         draw_text "Back" 45 30 20 Color.white;
