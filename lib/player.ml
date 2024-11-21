@@ -11,9 +11,9 @@ type t = {
 
 let create () =
   {
-    current_skin = Skins.SantaSkin.draw;
+    current_skin = Skins.SantaJim.draw;
     coins = 10;
-    skins = [ Skins.DefaultSkin.draw ];
+    skins = [ Skins.DefaultSkin.draw; Skins.SantaJim.draw; Skins.AngryJim.draw ];
     jump_height = 1;
     speed = 1;
     coin_multiplier = 1;

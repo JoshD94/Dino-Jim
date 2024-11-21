@@ -175,12 +175,15 @@ let init_game lvl obstacle_count speed_mul gravity jump_force biome player () =
     ^ " " ^ string_of_int speed_mul ^ " " ^ string_of_float gravity ^ " "
     ^ string_of_float jump_force);
 
+  (* set distance between obstacles based on level *)
+  let distance = float_of_int speed_mul *. 60. in
+
   (* initial game state *)
   let initial_state =
     {
       pos = { x = 100.0; y = 350.0; velocity_y = 0.0 };
-      obstacles = Obstacle.init_obstacles biome obstacle_count ();
-      speed = initial_speed;
+      obstacles = Obstacle.init_obstacles biome obstacle_count distance ();
+      speed = initial_speed *. float_of_int speed_mul;
       obstacles_passed = 0;
       total_obstacles = obstacle_count;
       completed = false;

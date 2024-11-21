@@ -194,13 +194,15 @@ let run_menu player =
         | Level n ->
             let obstacle_count = calculate_obstacle_count n in
             let starting_level = n in
-            let starting_speed = 1 in
-            let gravity = 1.0 in
-            let jump_force = -18.0 in
+            let speed_multiplier =
+              int_of_float (1. +. (0.2 *. float_of_int n))
+            in
+            let gravity = 1. +. (0.2 *. float_of_int n) in
+            let jump_force = -18.0 -. (1. +. (1. *. float_of_int n)) in
             let biome = get_biome_for_level n in
 
             ignore
-              (Game.init_game starting_level obstacle_count starting_speed
+              (Game.init_game starting_level obstacle_count speed_multiplier
                  gravity jump_force biome player ());
 
             LevelSelect

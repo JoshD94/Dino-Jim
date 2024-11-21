@@ -5,3 +5,5 @@ type obstacle = {
   height : float;
   name : string;
 }
+
+val string_of_obstacle : obstacle -> string

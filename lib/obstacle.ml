@@ -3,8 +3,8 @@ open ObstacleType
 
 type t = obstacle
 
-let min_spacing = 300.0
-let max_spacing = 500.0
+let min_spacing = ref 200.0
+let max_spacing = ref 500.0
 let ground_y = 410.0
 
 type obstacle_dimensions = {
@@ -13,6 +13,11 @@ type obstacle_dimensions = {
   min_width : float;
   max_width : float;
 }
+
+(* Getters for obstacle dimensions *)
+(* let get_min_height obs = obs.min_height let get_max_height obs =
+   obs.max_height let get_min_width obs = obs.min_width let get_max_width obs =
+   obs.max_width *)
 
 (* Obstacle dimensions *)
 let cactus =
@@ -91,7 +96,7 @@ let create x biome =
       obs.min_width +. Random.float (obs.max_width -. obs.min_width)
     in
     {
-      x = Random.float (max_spacing -. min_spacing) +. x;
+      x = Random.float (!max_spacing -. !min_spacing) +. x;
       y = ground_y -. height;
       width;
       height;
@@ -145,7 +150,10 @@ let obstacle_tracking =
 
 let get_passed_count () = !obstacle_tracking.passed_count
 
-let init_obstacles biome total () =
+let init_obstacles biome total distance () =
+  max_spacing := 200. +. distance;
+  min_spacing := 500. +. distance;
+
   obstacle_tracking :=
     { spawned_count = 1; total_count = total; passed_count = 0 };
   [ create (1200.0 +. safe_start_distance) biome ]
@@ -173,7 +181,7 @@ let update obstacles speed biome =
   in
 
   if
-    rightmost < 1200.0 -. min_spacing
+    rightmost < 1200.0 -. !min_spacing
     && !obstacle_tracking.spawned_count < !obstacle_tracking.total_count
   then (
     obstacle_tracking :=
