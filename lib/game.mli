@@ -6,7 +6,7 @@ type position = {
 
 type game_state = {
   pos : position;
-  obstacles : Obstacle.t list;
+  obstacles : ObstacleType.obstacle list;
   speed : float;
   obstacles_passed : int;
   total_obstacles : int;
@@ -25,3 +25,12 @@ val init_game :
 
 val update_position : position -> float -> float -> position
 val render : game_state -> Player.t -> unit
+val get_death_message : string -> string
+
+val get_collision_obstacle :
+  float ->
+  float ->
+  float ->
+  float ->
+  ObstacleType.obstacle list ->
+  string option
