@@ -10,3 +10,8 @@ val coins : t -> int
 val buyable_skin_list : t -> (float -> float -> int) list
 val current_skin : t -> float -> float -> int
 val select_skin : t -> (float -> float -> int) -> unit
+
+(* New level progress functions *)
+val is_level_unlocked : t -> int -> bool
+val complete_level : t -> int -> unit
+val get_completed_levels : t -> int list

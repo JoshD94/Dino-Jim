@@ -1,9 +1,9 @@
 open Raylib
 
-let grass_rgb = (206, 255, 194) (* Light green *)
-let rock_rgb = (117, 117, 117) (* Light gray *)
-let snow_rgb = (189, 251, 255) (* Light blue *)
-let lava_rgb = (255, 158, 120) (* Light orange *)
+let grass_rgb = (34, 139, 34) (* Green *)
+let snow_rgb = (135, 206, 235) (* Light Blue *)
+let rock_rgb = (128, 128, 128) (* Gray *)
+let lava_rgb = (178, 34, 34) (* Red *)
 
 (* Helper for linear interpolation of a single number *)
 let lerp a b t =
@@ -13,8 +13,8 @@ let lerp a b t =
 (* Get biome based on level number *)
 let get_biome_for_level level =
   if level <= 3 then grass_rgb
-  else if level <= 6 then rock_rgb
-  else if level <= 9 then snow_rgb
+  else if level <= 6 then snow_rgb
+  else if level <= 9 then rock_rgb
   else lava_rgb
 
 (* Draw the background with gradual color transitions *)

@@ -7,20 +7,43 @@ type t = {
   mutable coin_multiplier : int;
   mutable buyable_skins : (float -> float -> int) list;
   mutable powerups : string list;
+  mutable completed_levels : int list;
+      (* Added field for tracking completed levels *)
 }
 
 let create () =
-  {
-    current_skin = Skins.SantaJim.draw;
-    coins = 10;
-    skins = [ Skins.DefaultSkin.draw; Skins.SantaJim.draw; Skins.AngryJim.draw ];
-    jump_height = 1;
-    speed = 1;
-    coin_multiplier = 1;
-    buyable_skins = [ Skins.SantaJim.draw ];
-    powerups = [];
-  }
+  let player =
+    {
+      current_skin = Skins.SantaJim.draw;
+      coins = 10;
+      skins =
+        [ Skins.DefaultSkin.draw; Skins.SantaJim.draw; Skins.AngryJim.draw ];
+      jump_height = 1;
+      speed = 1;
+      coin_multiplier = 1;
+      buyable_skins = [ Skins.SantaJim.draw ];
+      powerups = [];
+      completed_levels = [];
+    }
+  in
+  (* Try to load saved progress *)
+  (try
+     let ic = open_in "save_game.csv" in
+     let _ = input_line ic in
+     let saved_data = input_line ic in
+     let fields = String.split_on_char ',' saved_data in
+     (match fields with
+     | coins :: completed_levels_str :: _ ->
+         player.coins <- int_of_string coins;
+         player.completed_levels <-
+           List.map int_of_string
+             (String.split_on_char ';' completed_levels_str)
+     | _ -> ());
+     close_in ic
+   with _ -> ());
+  player
 
+(* Existing functions remain unchanged *)
 let rec remove_from_buyable skin_list (skin : float -> float -> int) =
   match skin_list with
   | [] -> []
@@ -62,3 +85,24 @@ let rec skin_in_list lst skin =
 
 let select_skin t skin =
   if skin_in_list t.skins skin then t.current_skin <- skin
+
+(* New functions for level progress *)
+let is_level_unlocked t level =
+  level = 1 || List.mem (level - 1) t.completed_levels
+
+let complete_level t level =
+  if not (List.mem level t.completed_levels) then begin
+    t.completed_levels <- level :: t.completed_levels;
+    (* Save progress to CSV *)
+    try
+      let oc = open_out "save_game.csv" in
+      (* Write header *)
+      output_string oc "coins,completed_levels\n";
+      (* Write data *)
+      Printf.fprintf oc "%d,%s\n" t.coins
+        (String.concat ";" (List.map string_of_int t.completed_levels));
+      close_out oc
+    with _ -> () (* Handle save errors gracefully *)
+  end
+
+let get_completed_levels t = t.completed_levels

@@ -68,8 +68,10 @@ let draw_title () =
   draw_rectangle bg_rect_x bg_rect_y bg_rect_width bg_rect_height Color.raywhite;
   draw_text title ((screen_width - title_width) / 2) 40 title_size Color.black
 
-let draw_level_bubble level_num (x, y) unlocked =
+let draw_level_bubble player level_num (x, y) =
   let radius = button_size /. 2.0 in
+
+  let unlocked = Player.is_level_unlocked player level_num in
 
   (* Draw shadow *)
   draw_circle
@@ -79,13 +81,13 @@ let draw_level_bubble level_num (x, y) unlocked =
 
   (* Draw main circle with biome colors *)
   let color =
-    if not unlocked then Color.lightgray
+    if not unlocked then Color.black
     else
       match get_biome_for_level level_num with
-      | "grass" -> Color.create 34 139 34 255 (* Forest Green *)
-      | "rock" -> Color.create 128 128 128 255 (* Rock Gray *)
-      | "snow" -> Color.create 135 206 235 255 (* Ice Blue *)
-      | "lava" -> Color.create 178 34 34 255 (* Lava Red *)
+      | "grass" -> Color.create 24 97 24 255 (* Forest Green *)
+      | "rock" -> Color.create 89 89 89 255 (* Rock Gray *)
+      | "snow" -> Color.create 94 144 164 255 (* Ice Blue *)
+      | "lava" -> Color.create 124 24 24 255 (* Lava Red *)
       | _ -> Color.lightgray
   in
   draw_circle (int_of_float x) (int_of_float y) radius color;
@@ -98,7 +100,56 @@ let draw_level_bubble level_num (x, y) unlocked =
   let text_y = y -. (float_of_int text_size /. 2.0) in
   let text_color = if unlocked then Color.white else Color.gray in
   draw_text number_str (int_of_float text_x) (int_of_float text_y) text_size
-    text_color
+    text_color;
+
+  (* Draw lock symbol if level is locked *)
+  if not unlocked then begin
+    (* Draw substantial lock with bridge top *)
+    let base_width = 45.0 in
+
+    (* Wider base *)
+    let bridge_width = 35.0 in
+
+    (* Narrower bridge *)
+    let lock_y = y -. (base_width /. 2.0) +. 15.0 in
+
+    (* Draw wider base rectangle (body of lock) *)
+    let base_x = x -. (base_width /. 2.0) in
+
+    draw_rectangle (int_of_float base_x) (int_of_float lock_y)
+      (int_of_float base_width)
+      (int_of_float (base_width *. 0.8))
+      Color.white;
+
+    (* Draw bridge top - positioned relative to base *)
+    let bridge_height = base_width *. 0.6 in
+
+    let pillar_width = bridge_width *. 0.2 in
+
+    let bridge_x = x -. (bridge_width /. 2.0) in
+
+    (* Left pillar *)
+    draw_rectangle (int_of_float bridge_x)
+      (int_of_float (lock_y -. bridge_height))
+      (int_of_float pillar_width)
+      (int_of_float bridge_height)
+      Color.white;
+
+    (* Right pillar *)
+    draw_rectangle
+      (int_of_float (bridge_x +. bridge_width -. pillar_width))
+      (int_of_float (lock_y -. bridge_height))
+      (int_of_float pillar_width)
+      (int_of_float bridge_height)
+      Color.white;
+
+    (* Top connecting piece *)
+    draw_rectangle (int_of_float bridge_x)
+      (int_of_float (lock_y -. bridge_height))
+      (int_of_float bridge_width)
+      (int_of_float (bridge_height *. 0.3))
+      Color.white
+  end
 
 let check_level_click mouse_pos (x, y) =
   let radius = button_size /. 2.0 in
@@ -159,14 +210,15 @@ let run_menu player =
             let clicked_level = ref None in
             for i = 0 to num_levels - 1 do
               let level_num = i + 1 in
-              let unlocked = true in
               let x, y = points.(i) in
-              draw_level_bubble level_num (x, y) unlocked;
+              draw_level_bubble player level_num (x, y);
 
               if is_mouse_button_pressed MouseButton.Left then begin
                 let mouse_pos = get_mouse_position () in
-                if check_level_click mouse_pos (x, y) && unlocked then
-                  clicked_level := Some level_num
+                if
+                  check_level_click mouse_pos (x, y)
+                  && Player.is_level_unlocked player level_num
+                then clicked_level := Some level_num
               end
             done;
 
