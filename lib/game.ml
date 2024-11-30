@@ -196,7 +196,9 @@ let init_game lvl obstacle_count speed_mul gravity jump_force biome player () =
   let rec game_loop state player =
     if window_should_close () then ()
     else if check_back_button () then ()
-    else if (state.completed || state.died) && check_retry_button () then ()
+    else if (state.completed || state.died) && check_retry_button () then (
+      if state.completed then Player.complete_level player lvl;
+      ())
     else
       (* Update game state *)
       let new_pos = update_position state.pos gravity jump_force in
