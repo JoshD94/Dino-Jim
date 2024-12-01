@@ -1,3 +1,5 @@
+open Skins
+
 type t = {
   mutable current_skin : float -> float -> int;
   mutable coins : int;
@@ -14,14 +16,21 @@ type t = {
 let create () =
   let player =
     {
-      current_skin = Skins.SantaJim.draw;
+      current_skin = SantaJim.draw;
       coins = 10;
-      skins =
-        [ Skins.DefaultSkin.draw; Skins.SantaJim.draw; Skins.AngryJim.draw ];
+      skins = [ DefaultSkin.draw; SantaJim.draw; AngryJim.draw ];
       jump_height = 1;
       speed = 1;
       coin_multiplier = 1;
-      buyable_skins = [ Skins.SantaJim.draw ];
+      buyable_skins =
+        [
+          GreenJim.draw;
+          RedJim.draw;
+          OrangeJim.draw;
+          BlueJim.draw;
+          InvisibleJim.draw;
+          DarthJim.draw;
+        ];
       powerups = [];
       completed_levels = [];
     }
@@ -53,8 +62,9 @@ let rec remove_from_buyable skin_list (skin : float -> float -> int) =
 let add_coins t coins = t.coins <- t.coins + coins
 
 let add_skin t skin =
-  t.skins <- skin :: t.skins;
-  t.buyable_skins <- remove_from_buyable t.buyable_skins skin
+  if List.filter (fun x -> x 0. 0. = skin 0. 0.) t.skins = [] then (
+    t.skins <- skin :: t.skins;
+    t.buyable_skins <- remove_from_buyable t.buyable_skins skin)
 
 let add_powerup t power =
   if power = "Jump" then (
@@ -67,12 +77,7 @@ let add_powerup t power =
     t.speed <- t.speed * 2;
     t.powerups <- "Faster" :: t.powerups)
 
-let rec in_list lst x =
-  match lst with
-  | [] -> false
-  | h :: t -> if x = h then true else in_list t x
-
-let has_powerup t power = in_list t.powerups power
+let has_powerup t power = List.mem power t.powerups
 let skins t = t.skins
 let coins t = t.coins
 let buyable_skin_list t = t.buyable_skins
