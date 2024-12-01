@@ -2,12 +2,202 @@ open OUnit2
 open Jim.ObstacleType
 open Jim.Game
 open Jim.Menu
+open Jim
+open Jim.Skins
+open Jim.Player
+
+(* Setup for testing Skins *)
+let setup () =
+  Raylib.init_window 1000 1000 "a";
+  Raylib.set_target_fps 60
+
+let () = setup ()
 
 (* Helper function to compare position record type *)
 let assert_position_equal expected actual =
   assert_equal expected.x actual.x;
   assert_equal expected.y actual.y;
   assert_equal expected.velocity_y actual.velocity_y
+
+(* Test create makes separate instances of a player when called *)
+let test_player_create () =
+  "Create test"
+  >::
+  let p1 = Player.create () in
+  let p2 = Player.create () in
+  fun _ -> assert_bool "Create False" (p1 == p2 = false)
+
+(* Test coins *)
+let test_player_coins () =
+  "Coins test"
+  >::
+  let p1 = Player.create () in
+  let p2 = Player.create () in
+  Player.add_coins p2 10;
+  fun _ ->
+    assert_bool "Coins False" (Player.coins p1 = 10 && Player.coins p2 = 20)
+
+(* Test skin id *)
+let test_player_skins_id () =
+  "Skins id test"
+  >::
+  let p1 = Player.create () in
+  let p2 = Player.create () in
+  select_skin p1 SantaJim.draw;
+  select_skin p2 DefaultSkin.draw;
+  add_skin p2 OrangeJim.draw;
+  add_skin p2 RedJim.draw;
+  add_skin p2 GreenJim.draw;
+  add_skin p2 BlueJim.draw;
+  add_skin p2 DarthJim.draw;
+  add_skin p2 InvisibleJim.draw;
+  let b =
+    (Player.current_skin p1) 0. 0. = SantaJim.draw 0. 0.
+    && (Player.current_skin p2) 0. 0. = DefaultSkin.draw 0. 0.
+    && List.map (fun x -> x 0. 0.) (Player.skins p1) = [ 0; 1; 2 ]
+    && List.map (fun x -> x 0. 0.) (Player.skins p2)
+       = [ 6; 8; 5; 3; 4; 7; 0; 1; 2 ]
+    && List.map (fun x -> x 0. 0.) (Player.buyable_skin_list p1)
+       = [ 3; 4; 7; 5; 6; 8 ]
+    && List.map (fun x -> x 0. 0.) (Player.buyable_skin_list p2) = []
+  in
+  fun _ -> assert_bool "Skins id False" b
+
+(* Test Buy skins *)
+let test_buy_skins () =
+  "Buy skins test"
+  >::
+  let p = Player.create () in
+  add_skin p DefaultSkin.draw;
+  let a =
+    List.map (fun x -> x 0. 0.) (buyable_skin_list p) = [ 3; 4; 7; 5; 6; 8 ]
+  in
+  add_skin p SantaJim.draw;
+  let b =
+    List.map (fun x -> x 0. 0.) (buyable_skin_list p) = [ 3; 4; 7; 5; 6; 8 ]
+  in
+  add_skin p OrangeJim.draw;
+  let c =
+    List.map (fun x -> x 0. 0.) (buyable_skin_list p) = [ 3; 4; 5; 6; 8 ]
+  in
+  add_skin p BlueJim.draw;
+  let d = List.map (fun x -> x 0. 0.) (buyable_skin_list p) = [ 3; 4; 6; 8 ] in
+  add_skin p InvisibleJim.draw;
+  let e = List.map (fun x -> x 0. 0.) (buyable_skin_list p) = [ 3; 4; 8 ] in
+  add_skin p DarthJim.draw;
+  let f = List.map (fun x -> x 0. 0.) (buyable_skin_list p) = [ 3; 4 ] in
+  add_skin p GreenJim.draw;
+  let g = List.map (fun x -> x 0. 0.) (buyable_skin_list p) = [ 4 ] in
+  add_skin p RedJim.draw;
+  let h = List.map (fun x -> x 0. 0.) (buyable_skin_list p) = [] in
+  ();
+  fun _ -> assert_bool "Buy skins false" (a && b && c && d && e && f && g && h)
+
+(* Test add skins *)
+let test_add_skins () =
+  "Add skins test"
+  >::
+  let p = Player.create () in
+  add_skin p DefaultSkin.draw;
+  let a = List.map (fun x -> x 0. 0.) (skins p) = [ 0; 1; 2 ] in
+  add_skin p SantaJim.draw;
+  let b = List.map (fun x -> x 0. 0.) (skins p) = [ 0; 1; 2 ] in
+  add_skin p OrangeJim.draw;
+  let c = List.map (fun x -> x 0. 0.) (skins p) = [ 7; 0; 1; 2 ] in
+  add_skin p BlueJim.draw;
+  let d = List.map (fun x -> x 0. 0.) (skins p) = [ 5; 7; 0; 1; 2 ] in
+  add_skin p InvisibleJim.draw;
+  let e = List.map (fun x -> x 0. 0.) (skins p) = [ 6; 5; 7; 0; 1; 2 ] in
+  add_skin p DarthJim.draw;
+  let f = List.map (fun x -> x 0. 0.) (skins p) = [ 8; 6; 5; 7; 0; 1; 2 ] in
+  add_skin p GreenJim.draw;
+  let g = List.map (fun x -> x 0. 0.) (skins p) = [ 3; 8; 6; 5; 7; 0; 1; 2 ] in
+  add_skin p RedJim.draw;
+  let h =
+    List.map (fun x -> x 0. 0.) (skins p) = [ 4; 3; 8; 6; 5; 7; 0; 1; 2 ]
+  in
+  ();
+  fun _ -> assert_bool "Buy skins false" (a && b && c && d && e && f && g && h)
+
+(* Test Skin select *)
+let test_select_skin () =
+  "Skin select test"
+  >::
+  let p = Player.create () in
+  select_skin p DefaultSkin.draw;
+  let a = (current_skin p) 0. 0. = DefaultSkin.draw 0. 0. in
+  select_skin p SantaJim.draw;
+  let b =
+    (current_skin p) 0. 0. = SantaJim.draw 0. 0.
+    && (current_skin p) 0. 0. <> DefaultSkin.draw 0. 0.
+  in
+  select_skin p AngryJim.draw;
+  let c = (current_skin p) 0. 0. = AngryJim.draw 0. 0. in
+  select_skin p OrangeJim.draw;
+  let d = (current_skin p) 0. 0. = AngryJim.draw 0. 0. in
+  select_skin p RedJim.draw;
+  let e = (current_skin p) 0. 0. = AngryJim.draw 0. 0. in
+  select_skin p GreenJim.draw;
+  let f = (current_skin p) 0. 0. = AngryJim.draw 0. 0. in
+  select_skin p InvisibleJim.draw;
+  let g = (current_skin p) 0. 0. = AngryJim.draw 0. 0. in
+  select_skin p DarthJim.draw;
+  let h = (current_skin p) 0. 0. = AngryJim.draw 0. 0. in
+  select_skin p BlueJim.draw;
+  add_skin p OrangeJim.draw;
+  add_skin p RedJim.draw;
+  add_skin p GreenJim.draw;
+  add_skin p BlueJim.draw;
+  add_skin p DarthJim.draw;
+  add_skin p InvisibleJim.draw;
+  let i = (current_skin p) 0. 0. = AngryJim.draw 0. 0. in
+  select_skin p OrangeJim.draw;
+  let j = (current_skin p) 0. 0. = OrangeJim.draw 0. 0. in
+  select_skin p RedJim.draw;
+  let k = (current_skin p) 0. 0. = RedJim.draw 0. 0. in
+  select_skin p GreenJim.draw;
+  let l = (current_skin p) 0. 0. = GreenJim.draw 0. 0. in
+  select_skin p InvisibleJim.draw;
+  let m = (current_skin p) 0. 0. = InvisibleJim.draw 0. 0. in
+  select_skin p DarthJim.draw;
+  let n = (current_skin p) 0. 0. = DarthJim.draw 0. 0. in
+  select_skin p BlueJim.draw;
+  let o = (current_skin p) 0. 0. = BlueJim.draw 0. 0. in
+  ();
+  fun _ ->
+    assert_bool "Skin select false"
+      (a && b && c && d && e && f && g && h && i && j && k && l && m && n && o)
+
+(* Test Powerups *)
+let test_powerups () =
+  "Powerups test"
+  >::
+  let p = Player.create () in
+  add_powerup p "";
+  let a = has_powerup p "" = false in
+  add_powerup p "Jump";
+  let b = has_powerup p "Faster" = false in
+  add_powerup p "Faster";
+  let c = has_powerup p "Faster" in
+  add_powerup p "More coins";
+  let d = has_powerup p "Jump" in
+  ();
+  let e = has_powerup p "More coins" in
+  ();
+  fun _ -> assert_bool "Powerups test false" (a && b && c && d && e)
+
+(* Test Jim.Player *)
+let player_tests =
+  "Test suite for Player"
+  >::: [
+         test_player_create ();
+         test_player_skins_id ();
+         test_player_coins ();
+         test_buy_skins ();
+         test_add_skins ();
+         test_powerups ();
+         test_select_skin ();
+       ]
 
 (* Test Jim.Obstacle.create *)
 let obstacle_create_tests =
@@ -171,6 +361,7 @@ let () =
   run_test_tt_main
     ("all_tests"
     >::: [
+           player_tests;
            obstacle_create_tests;
            obstacle_init_tests;
            death_message_tests;
