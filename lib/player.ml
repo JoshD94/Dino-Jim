@@ -86,7 +86,10 @@ let current_skin t = t.current_skin
 let rec skin_in_list lst skin =
   match lst with
   | [] -> false
-  | h :: t -> if h 0. 0. = skin 0. 0. then true else skin_in_list t skin
+  | h :: t ->
+      if h 10000. 10000. = skin 10000. 10000. then true else skin_in_list t skin
+
+let has_skin t skin = skin_in_list t.skins skin
 
 let select_skin t skin =
   if skin_in_list t.skins skin then t.current_skin <- skin
