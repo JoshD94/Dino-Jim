@@ -1,10 +1,12 @@
 open Raylib
 open Shop
+open SkinSelect
 
 type game_state =
   | LevelSelect
   | Level of int
   | Shop
+  | SkinSelect
 
 type scroll_state = {
   mutable scroll_y : float;
@@ -53,6 +55,15 @@ let draw_header () =
   draw_rectangle shop_x shop_y shop_width shop_height Color.gray;
   draw_text "Shop" (shop_x + 20) (shop_y + 10) 20 Color.white;
   (shop_x, shop_y, shop_width, shop_height)
+
+let draw_skin_select_header () =
+  let select_width = 160 in
+  let select_height = 40 in
+  let select_x = 20 in
+  let select_y = 20 in
+  draw_rectangle select_x select_y select_width select_height Color.gray;
+  draw_text "Skin select" (select_x + 20) (select_y + 10) 20 Color.white;
+  (select_x, select_y, select_width, select_height)
 
 let draw_title () =
   let title = "Level Select" in
@@ -225,6 +236,9 @@ let run_menu player =
             update_scroll scroll_state;
 
             let shop_x, shop_y, shop_width, shop_height = draw_header () in
+            let select_x, select_y, select_width, select_height =
+              draw_skin_select_header ()
+            in
             draw_title ();
 
             if is_mouse_button_pressed MouseButton.Left then begin
@@ -237,6 +251,12 @@ let run_menu player =
                 && mouse_y >= float_of_int shop_y
                 && mouse_y <= float_of_int (shop_y + shop_height)
               then Shop
+              else if
+                mouse_x >= float_of_int select_x
+                && mouse_x <= float_of_int (select_x + select_width)
+                && mouse_y >= float_of_int select_y
+                && mouse_y <= float_of_int (select_y + select_height)
+              then SkinSelect
               else
                 match !clicked_level with
                 | Some n -> Level n
@@ -260,6 +280,9 @@ let run_menu player =
             LevelSelect
         | Shop ->
             run_shop player;
+            LevelSelect
+        | SkinSelect ->
+            run_skin_select player;
             LevelSelect
       in
 
