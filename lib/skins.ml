@@ -1,6 +1,7 @@
 open Raylib
 
 let draw_default_with_color color x y =
+  (* Body *)
   draw_rectangle (int_of_float x) (int_of_float y + 20) 20 30 color;
 
   (* Head *)
