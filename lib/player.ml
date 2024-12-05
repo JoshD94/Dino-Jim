@@ -13,7 +13,7 @@ type t = {
       (* Added field for tracking completed levels *)
 }
 
-let create () =
+let create_player () =
   let player =
     {
       current_skin = SantaJim.draw;

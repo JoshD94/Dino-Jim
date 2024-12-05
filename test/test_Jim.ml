@@ -1,5 +1,4 @@
 open OUnit2
-open Jim.ObstacleType
 open Jim.Game
 open Jim
 open Jim.Skins
@@ -13,7 +12,7 @@ let setup () =
 let () = setup ()
 
 (* Helper function to compare position record type *)
-let assert_position_equal expected actual =
+let assert_position_equal (expected : position) (actual : position) =
   assert_equal expected.x actual.x;
   assert_equal expected.y actual.y;
   assert_equal expected.velocity_y actual.velocity_y
@@ -22,16 +21,16 @@ let assert_position_equal expected actual =
 let test_player_create () =
   "Create test"
   >::
-  let p1 = Player.create () in
-  let p2 = Player.create () in
+  let p1 = create_player () in
+  let p2 = create_player () in
   fun _ -> assert_bool "Create False" (p1 == p2 = false)
 
 (* Test coins *)
 let test_player_coins () =
   "Coins test"
   >::
-  let p1 = Player.create () in
-  let p2 = Player.create () in
+  let p1 = create_player () in
+  let p2 = create_player () in
   Player.add_coins p2 10;
   fun _ ->
     assert_bool "Coins False" (Player.coins p1 = 10 && Player.coins p2 = 20)
@@ -40,8 +39,8 @@ let test_player_coins () =
 let test_player_skins_id () =
   "Skins id test"
   >::
-  let p1 = Player.create () in
-  let p2 = Player.create () in
+  let p1 = create_player () in
+  let p2 = create_player () in
   select_skin p1 SantaJim.draw;
   select_skin p2 DefaultSkin.draw;
   add_skin p2 OrangeJim.draw;
@@ -66,7 +65,7 @@ let test_player_skins_id () =
 let test_buy_skins () =
   "Buy skins test"
   >::
-  let p = Player.create () in
+  let p = create_player () in
   add_skin p DefaultSkin.draw;
   let a =
     List.map (fun x -> x 0. 0.) (buyable_skin_list p) = [ 3; 4; 7; 5; 6; 8 ]
@@ -96,7 +95,7 @@ let test_buy_skins () =
 let test_add_skins () =
   "Add skins test"
   >::
-  let p = Player.create () in
+  let p = create_player () in
   add_skin p DefaultSkin.draw;
   let a = List.map (fun x -> x 0. 0.) (skins p) = [ 0; 1; 2 ] in
   add_skin p SantaJim.draw;
@@ -122,7 +121,7 @@ let test_add_skins () =
 let test_select_skin () =
   "Skin select test"
   >::
-  let p = Player.create () in
+  let p = create_player () in
   select_skin p DefaultSkin.draw;
   let a = (current_skin p) 0. 0. = DefaultSkin.draw 0. 0. in
   select_skin p SantaJim.draw;
@@ -171,7 +170,7 @@ let test_select_skin () =
 let test_powerups () =
   "Powerups test"
   >::
-  let p = Player.create () in
+  let p = create_player () in
   add_powerup p "";
   let a = has_powerup p "" = false in
   add_powerup p "Jump";

@@ -1,8 +1,19 @@
-type t = ObstacleType.obstacle
+type t = {
+  x : float;
+  y : float;
+  width : float;
+  height : float;
+  name : string;
+}
 
-val get_passed_count : unit -> int
 val create : float -> string -> t
 val init_obstacles : string -> int -> float -> unit -> t list
-val update : t list -> float -> string -> t list
-val check_collision : float -> float -> float -> float -> t list -> bool
-val render : t list -> unit
+
+type obstacle_state = {
+  spawned_count : int;
+  total_count : int;
+  passed_count : int;
+}
+
+val min_spacing : float ref
+val obstacle_tracking : obstacle_state ref
