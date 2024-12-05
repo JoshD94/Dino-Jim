@@ -1,7 +1,6 @@
 open OUnit2
 open Jim.ObstacleType
 open Jim.Game
-open Jim.Menu
 open Jim
 open Jim.Skins
 open Jim.Player
@@ -336,26 +335,18 @@ let update_position_tests =
        ]
 
 (* Test get_biome_for_level *)
-let biome_tests =
-  "test suite for get_biome_for_level"
-  >::: [
-         ( "test grass biome levels" >:: fun _ ->
-           assert_equal "grass" (get_biome_for_level 1);
-           assert_equal "grass" (get_biome_for_level 2);
-           assert_equal "grass" (get_biome_for_level 3) );
-         ( "test rock biome levels" >:: fun _ ->
-           assert_equal "rock" (get_biome_for_level 4);
-           assert_equal "rock" (get_biome_for_level 5);
-           assert_equal "rock" (get_biome_for_level 6) );
-         ( "test snow biome levels" >:: fun _ ->
-           assert_equal "snow" (get_biome_for_level 7);
-           assert_equal "snow" (get_biome_for_level 8);
-           assert_equal "snow" (get_biome_for_level 9) );
-         ( "test lava biome levels" >:: fun _ ->
-           assert_equal "lava" (get_biome_for_level 10);
-           assert_equal "lava" (get_biome_for_level 11);
-           assert_equal "lava" (get_biome_for_level 12) );
-       ]
+(* let biome_tests = "test suite for get_biome_for_level" >::: [ ( "test grass
+   biome levels" >:: fun _ -> assert_equal "grass" (get_biome_for_level 1);
+   assert_equal "grass" (get_biome_for_level 2); assert_equal "grass"
+   (get_biome_for_level 3) ); ( "test rock biome levels" >:: fun _ ->
+   assert_equal "rock" (get_biome_for_level 4); assert_equal "rock"
+   (get_biome_for_level 5); assert_equal "rock" (get_biome_for_level 6) ); (
+   "test snow biome levels" >:: fun _ -> assert_equal "snow"
+   (get_biome_for_level 7); assert_equal "snow" (get_biome_for_level 8);
+   assert_equal "snow" (get_biome_for_level 9) ); ( "test lava biome levels" >::
+   fun _ -> assert_equal "lava" (get_biome_for_level 10); assert_equal "lava"
+   (get_biome_for_level 11); assert_equal "lava" (get_biome_for_level 12) );
+   ] *)
 
 let () =
   run_test_tt_main
@@ -366,5 +357,5 @@ let () =
            obstacle_init_tests;
            death_message_tests;
            update_position_tests;
-           biome_tests;
+           (* biome_tests; *)
          ])

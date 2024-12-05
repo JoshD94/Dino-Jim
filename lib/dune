@@ -1,3 +1,5 @@
 (library
  (name jim)
+ (instrumentation
+  (backend bisect_ppx))
  (libraries raylib))
