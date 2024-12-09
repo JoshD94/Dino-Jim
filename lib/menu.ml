@@ -190,6 +190,12 @@ let update_scroll scroll_state =
   scroll_state.scroll_y <-
     max 0.0 (min scroll_state.scroll_y scroll_state.max_scroll)
 
+let get_level_reward level =
+  if level <= 3 then 5 (* Forest levels: +5 coins *)
+  else if level <= 6 then 10 (* Snow levels: +10 coins *)
+  else if level <= 9 then 15 (* Rock levels: +15 coins *)
+  else 20 (* Volcano levels: +20 coins *)
+
 let run_menu player =
   init_window screen_width screen_height "Level Select";
   set_target_fps 60;
@@ -273,9 +279,14 @@ let run_menu player =
             let jump_force = -18.0 -. (1. +. (1. *. float_of_int n)) in
             let biome = get_biome_for_level n in
 
-            ignore
-              (Game.init_game starting_level obstacle_count speed_multiplier
-                 gravity jump_force biome player ());
+            (* Run the game normally *)
+            Game.init_game starting_level obstacle_count speed_multiplier
+              gravity jump_force biome player ();
+
+            (* Check if this level was just completed (by checking if it's in
+               completed_levels) *)
+            if List.mem n (Player.get_completed_levels player) then
+              Player.add_coins player (get_level_reward n);
 
             LevelSelect
         | Shop ->

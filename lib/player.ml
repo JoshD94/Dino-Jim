@@ -13,6 +13,9 @@ type t = {
       (* Added field for tracking completed levels *)
 }
 
+let save_filename = ref "save_game.csv"
+let set_save_file filename = save_filename := filename
+
 let create () =
   let player =
     {
@@ -37,7 +40,7 @@ let create () =
   in
   (* Try to load saved progress *)
   (try
-     let ic = open_in "save_game.csv" in
+     let ic = open_in !save_filename in
      let _ = input_line ic in
      let saved_data = input_line ic in
      let fields = String.split_on_char ',' saved_data in
@@ -59,7 +62,15 @@ let rec remove_from_buyable skin_list (skin : float -> float -> int) =
   | h :: t ->
       if h 0. 0. = skin 0. 0. then t else h :: remove_from_buyable t skin
 
-let add_coins t coins = t.coins <- t.coins + coins
+let add_coins t amount =
+  t.coins <- t.coins + amount;
+  try
+    let oc = open_out !save_filename in
+    output_string oc "coins,completed_levels\n";
+    Printf.fprintf oc "%d,%s\n" t.coins
+      (String.concat ";" (List.map string_of_int t.completed_levels));
+    close_out oc
+  with _ -> ()
 
 let add_skin t skin =
   if List.filter (fun x -> x 0. 0. = skin 0. 0.) t.skins = [] then (
@@ -101,16 +112,14 @@ let is_level_unlocked t level =
 let complete_level t level =
   if not (List.mem level t.completed_levels) then begin
     t.completed_levels <- level :: t.completed_levels;
-    (* Save progress to CSV *)
+    (* Save progress to CSV using save_filename reference *)
     try
-      let oc = open_out "save_game.csv" in
-      (* Write header *)
+      let oc = open_out !save_filename in
       output_string oc "coins,completed_levels\n";
-      (* Write data *)
       Printf.fprintf oc "%d,%s\n" t.coins
         (String.concat ";" (List.map string_of_int t.completed_levels));
       close_out oc
-    with _ -> () (* Handle save errors gracefully *)
+    with _ -> ()
   end
 
 let get_completed_levels t = t.completed_levels

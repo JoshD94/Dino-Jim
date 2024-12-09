@@ -16,3 +16,4 @@ val has_skin : t -> (float -> float -> int) -> bool
 val is_level_unlocked : t -> int -> bool
 val complete_level : t -> int -> unit
 val get_completed_levels : t -> int list
+val set_save_file : string -> unit
