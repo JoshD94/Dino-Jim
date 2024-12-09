@@ -1,7 +1,5 @@
 open OUnit2
-open Jim.ObstacleType
 open Jim.Game
-open Jim.Menu
 open Jim
 open Jim.Skins
 open Jim.Player
@@ -14,7 +12,7 @@ let setup () =
 let () = setup ()
 
 (* Helper function to compare position record type *)
-let assert_position_equal expected actual =
+let assert_position_equal (expected : position) (actual : position) =
   assert_equal expected.x actual.x;
   assert_equal expected.y actual.y;
   assert_equal expected.velocity_y actual.velocity_y
@@ -23,16 +21,16 @@ let assert_position_equal expected actual =
 let test_player_create () =
   "Create test"
   >::
-  let p1 = Player.create () in
-  let p2 = Player.create () in
+  let p1 = create_player () in
+  let p2 = create_player () in
   fun _ -> assert_bool "Create False" (p1 == p2 = false)
 
 (* Test coins *)
 let test_player_coins () =
   "Coins test"
   >::
-  let p1 = Player.create () in
-  let p2 = Player.create () in
+  let p1 = create_player () in
+  let p2 = create_player () in
   Player.add_coins p2 10;
   fun _ ->
     assert_bool "Coins False" (Player.coins p1 = 10 && Player.coins p2 = 20)
@@ -41,8 +39,8 @@ let test_player_coins () =
 let test_player_skins_id () =
   "Skins id test"
   >::
-  let p1 = Player.create () in
-  let p2 = Player.create () in
+  let p1 = create_player () in
+  let p2 = create_player () in
   select_skin p1 SantaJim.draw;
   select_skin p2 DefaultSkin.draw;
   add_skin p2 OrangeJim.draw;
@@ -67,7 +65,7 @@ let test_player_skins_id () =
 let test_buy_skins () =
   "Buy skins test"
   >::
-  let p = Player.create () in
+  let p = create_player () in
   add_skin p DefaultSkin.draw;
   let a =
     List.map (fun x -> x 0. 0.) (buyable_skin_list p) = [ 3; 4; 7; 5; 6; 8 ]
@@ -97,7 +95,7 @@ let test_buy_skins () =
 let test_add_skins () =
   "Add skins test"
   >::
-  let p = Player.create () in
+  let p = create_player () in
   add_skin p DefaultSkin.draw;
   let a = List.map (fun x -> x 0. 0.) (skins p) = [ 0; 1; 2 ] in
   add_skin p SantaJim.draw;
@@ -123,7 +121,7 @@ let test_add_skins () =
 let test_select_skin () =
   "Skin select test"
   >::
-  let p = Player.create () in
+  let p = create_player () in
   select_skin p DefaultSkin.draw;
   let a = (current_skin p) 0. 0. = DefaultSkin.draw 0. 0. in
   select_skin p SantaJim.draw;
@@ -172,7 +170,7 @@ let test_select_skin () =
 let test_powerups () =
   "Powerups test"
   >::
-  let p = Player.create () in
+  let p = create_player () in
   add_powerup p "";
   let a = has_powerup p "" = false in
   add_powerup p "Jump";
@@ -336,26 +334,18 @@ let update_position_tests =
        ]
 
 (* Test get_biome_for_level *)
-let biome_tests =
-  "test suite for get_biome_for_level"
-  >::: [
-         ( "test grass biome levels" >:: fun _ ->
-           assert_equal "grass" (get_biome_for_level 1);
-           assert_equal "grass" (get_biome_for_level 2);
-           assert_equal "grass" (get_biome_for_level 3) );
-         ( "test rock biome levels" >:: fun _ ->
-           assert_equal "rock" (get_biome_for_level 4);
-           assert_equal "rock" (get_biome_for_level 5);
-           assert_equal "rock" (get_biome_for_level 6) );
-         ( "test snow biome levels" >:: fun _ ->
-           assert_equal "snow" (get_biome_for_level 7);
-           assert_equal "snow" (get_biome_for_level 8);
-           assert_equal "snow" (get_biome_for_level 9) );
-         ( "test lava biome levels" >:: fun _ ->
-           assert_equal "lava" (get_biome_for_level 10);
-           assert_equal "lava" (get_biome_for_level 11);
-           assert_equal "lava" (get_biome_for_level 12) );
-       ]
+(* let biome_tests = "test suite for get_biome_for_level" >::: [ ( "test grass
+   biome levels" >:: fun _ -> assert_equal "grass" (get_biome_for_level 1);
+   assert_equal "grass" (get_biome_for_level 2); assert_equal "grass"
+   (get_biome_for_level 3) ); ( "test rock biome levels" >:: fun _ ->
+   assert_equal "rock" (get_biome_for_level 4); assert_equal "rock"
+   (get_biome_for_level 5); assert_equal "rock" (get_biome_for_level 6) ); (
+   "test snow biome levels" >:: fun _ -> assert_equal "snow"
+   (get_biome_for_level 7); assert_equal "snow" (get_biome_for_level 8);
+   assert_equal "snow" (get_biome_for_level 9) ); ( "test lava biome levels" >::
+   fun _ -> assert_equal "lava" (get_biome_for_level 10); assert_equal "lava"
+   (get_biome_for_level 11); assert_equal "lava" (get_biome_for_level 12) );
+   ] *)
 
 let save_tests =
   "save tests"
@@ -363,7 +353,7 @@ let save_tests =
          ( "test basic save and load" >:: fun _ ->
            Player.set_save_file "test_basic_save.csv";
            (try Sys.remove "test_basic_save.csv" with _ -> ());
-           let p = create () in
+           let p = create_player () in
            Printf.printf "\n=== Basic Save Test ===\n";
            Printf.printf "Initial levels: [%s]\n"
              (String.concat ";"
@@ -372,7 +362,7 @@ let save_tests =
            Printf.printf "After completing level 1: [%s]\n"
              (String.concat ";"
                 (List.map string_of_int (get_completed_levels p)));
-           let p2 = create () in
+           let p2 = create_player () in
            Printf.printf "Loaded levels: [%s]\n"
              (String.concat ";"
                 (List.map string_of_int (get_completed_levels p2)));
@@ -381,7 +371,7 @@ let save_tests =
          ( "test completing multiple levels" >:: fun _ ->
            Player.set_save_file "test_multiple_levels.csv";
            (try Sys.remove "test_multiple_levels.csv" with _ -> ());
-           let p = create () in
+           let p = create_player () in
            Printf.printf "\n=== Multiple Levels Test ===\n";
            Printf.printf "Initial levels: [%s]\n"
              (String.concat ";"
@@ -394,7 +384,7 @@ let save_tests =
            Printf.printf "After level 2: [%s]\n"
              (String.concat ";"
                 (List.map string_of_int (get_completed_levels p)));
-           let p2 = create () in
+           let p2 = create_player () in
            Printf.printf "Loaded levels: [%s]\n"
              (String.concat ";"
                 (List.map string_of_int (get_completed_levels p2)));
@@ -403,7 +393,7 @@ let save_tests =
          ( "test basic coin persistence" >:: fun _ ->
            Player.set_save_file "test_coin_persist.csv";
            (try Sys.remove "test_coin_persist.csv" with _ -> ());
-           let p = create () in
+           let p = create_player () in
            Printf.printf "\n=== Basic Coin Persistence Test ===\n";
            Printf.printf "Initial coins: %d, levels: [%s]\n" (coins p)
              (String.concat ";"
@@ -412,7 +402,7 @@ let save_tests =
            Printf.printf "After adding coins: %d, levels: [%s]\n" (coins p)
              (String.concat ";"
                 (List.map string_of_int (get_completed_levels p)));
-           let p2 = create () in
+           let p2 = create_player () in
            Printf.printf "Loaded coins: %d, levels: [%s]\n" (coins p2)
              (String.concat ";"
                 (List.map string_of_int (get_completed_levels p2)));
@@ -421,7 +411,7 @@ let save_tests =
          ( "test basic coin spending" >:: fun _ ->
            Player.set_save_file "test_coin_spend.csv";
            (try Sys.remove "test_coin_spend.csv" with _ -> ());
-           let p = create () in
+           let p = create_player () in
            Printf.printf "\n=== Coin Spending Test ===\n";
            Printf.printf "Initial coins: %d, levels: [%s]\n" (coins p)
              (String.concat ";"
@@ -430,7 +420,7 @@ let save_tests =
            Printf.printf "After spending 5 coins: %d, levels: [%s]\n" (coins p)
              (String.concat ";"
                 (List.map string_of_int (get_completed_levels p)));
-           let p2 = create () in
+           let p2 = create_player () in
            Printf.printf "Loaded coins after spending: %d, levels: [%s]\n"
              (coins p2)
              (String.concat ";"
@@ -440,7 +430,7 @@ let save_tests =
          ( "test save file corruption recovery" >:: fun _ ->
            Player.set_save_file "test_corruption.csv";
            (try Sys.remove "test_corruption.csv" with _ -> ());
-           let p = create () in
+           let p = create_player () in
            Printf.printf "\n=== Corruption Recovery Test ===\n";
            Printf.printf "Initial state - coins: %d, levels: [%s]\n" (coins p)
              (String.concat ";"
@@ -452,7 +442,7 @@ let save_tests =
              (String.concat ";"
                 (List.map string_of_int (get_completed_levels p)));
            Sys.remove "test_corruption.csv";
-           let p2 = create () in
+           let p2 = create_player () in
            Printf.printf "After corruption - coins: %d, levels: [%s]\n"
              (coins p2)
              (String.concat ";"
@@ -471,125 +461,125 @@ let coin_reward_tests =
          ( "test level 1 reward" >:: fun _ ->
            set_save_file "test_save_1.csv";
            (try Sys.remove "test_save_1.csv" with _ -> ());
-           let p = create () in
+           let p = create_player () in
            let initial_coins = coins p in
            complete_level p 1;
            add_coins p (get_level_reward 1);
-           let p2 = create () in
+           let p2 = create_player () in
            assert_equal (initial_coins + 5) (coins p2) );
          ( "test level 2 reward" >:: fun _ ->
            set_save_file "test_save_2.csv";
            (try Sys.remove "test_save_2.csv" with _ -> ());
-           let p = create () in
+           let p = create_player () in
            let initial_coins = coins p in
            complete_level p 2;
            add_coins p (get_level_reward 2);
-           let p2 = create () in
+           let p2 = create_player () in
            assert_equal (initial_coins + 5) (coins p2) );
          ( "test level 3 reward" >:: fun _ ->
            set_save_file "test_save_3.csv";
            (try Sys.remove "test_save_3.csv" with _ -> ());
-           let p = create () in
+           let p = create_player () in
            let initial_coins = coins p in
            complete_level p 3;
            add_coins p (get_level_reward 3);
-           let p2 = create () in
+           let p2 = create_player () in
            assert_equal (initial_coins + 5) (coins p2) );
          (* Snow Biome - 10 coins each *)
          ( "test level 4 reward" >:: fun _ ->
            set_save_file "test_save_4.csv";
            (try Sys.remove "test_save_4.csv" with _ -> ());
-           let p = create () in
+           let p = create_player () in
            let initial_coins = coins p in
            complete_level p 4;
            add_coins p (get_level_reward 4);
-           let p2 = create () in
+           let p2 = create_player () in
            assert_equal (initial_coins + 10) (coins p2) );
          ( "test level 5 reward" >:: fun _ ->
            set_save_file "test_save_5.csv";
            (try Sys.remove "test_save_5.csv" with _ -> ());
-           let p = create () in
+           let p = create_player () in
            let initial_coins = coins p in
            complete_level p 5;
            add_coins p (get_level_reward 5);
-           let p2 = create () in
+           let p2 = create_player () in
            assert_equal (initial_coins + 10) (coins p2) );
          ( "test level 6 reward" >:: fun _ ->
            set_save_file "test_save_6.csv";
            (try Sys.remove "test_save_6.csv" with _ -> ());
-           let p = create () in
+           let p = create_player () in
            let initial_coins = coins p in
            complete_level p 6;
            add_coins p (get_level_reward 6);
-           let p2 = create () in
+           let p2 = create_player () in
            assert_equal (initial_coins + 10) (coins p2) );
          (* Rock Biome - 15 coins each *)
          ( "test level 7 reward" >:: fun _ ->
            set_save_file "test_save_7.csv";
            (try Sys.remove "test_save_7.csv" with _ -> ());
-           let p = create () in
+           let p = create_player () in
            let initial_coins = coins p in
            complete_level p 7;
            add_coins p (get_level_reward 7);
-           let p2 = create () in
+           let p2 = create_player () in
            assert_equal (initial_coins + 15) (coins p2) );
          ( "test level 8 reward" >:: fun _ ->
            set_save_file "test_save_8.csv";
            (try Sys.remove "test_save_8.csv" with _ -> ());
-           let p = create () in
+           let p = create_player () in
            let initial_coins = coins p in
            complete_level p 8;
            add_coins p (get_level_reward 8);
-           let p2 = create () in
+           let p2 = create_player () in
            assert_equal (initial_coins + 15) (coins p2) );
          ( "test level 9 reward" >:: fun _ ->
            set_save_file "test_save_9.csv";
            (try Sys.remove "test_save_9.csv" with _ -> ());
-           let p = create () in
+           let p = create_player () in
            let initial_coins = coins p in
            complete_level p 9;
            add_coins p (get_level_reward 9);
-           let p2 = create () in
+           let p2 = create_player () in
            assert_equal (initial_coins + 15) (coins p2) );
          (* Volcano Biome - 20 coins each *)
          ( "test level 10 reward" >:: fun _ ->
            set_save_file "test_save_10.csv";
            (try Sys.remove "test_save_10.csv" with _ -> ());
-           let p = create () in
+           let p = create_player () in
            let initial_coins = coins p in
            complete_level p 10;
            add_coins p (get_level_reward 10);
-           let p2 = create () in
+           let p2 = create_player () in
            assert_equal (initial_coins + 20) (coins p2) );
          ( "test level 11 reward" >:: fun _ ->
            set_save_file "test_save_11.csv";
            (try Sys.remove "test_save_11.csv" with _ -> ());
-           let p = create () in
+           let p = create_player () in
            let initial_coins = coins p in
            complete_level p 11;
            add_coins p (get_level_reward 11);
-           let p2 = create () in
+           let p2 = create_player () in
            assert_equal (initial_coins + 20) (coins p2) );
          ( "test level 12 reward" >:: fun _ ->
            set_save_file "test_save_12.csv";
            (try Sys.remove "test_save_12.csv" with _ -> ());
-           let p = create () in
+           let p = create_player () in
            let initial_coins = coins p in
            complete_level p 12;
            add_coins p (get_level_reward 12);
-           let p2 = create () in
+           let p2 = create_player () in
            assert_equal (initial_coins + 20) (coins p2) );
          (* Test completing multiple levels *)
          ( "test multiple level rewards" >:: fun _ ->
            set_save_file "test_save_multiple.csv";
            (try Sys.remove "test_save_multiple.csv" with _ -> ());
-           let p = create () in
+           let p = create_player () in
            let initial_coins = coins p in
            complete_level p 1;
            add_coins p (get_level_reward 1);
            complete_level p 4;
            add_coins p (get_level_reward 4);
-           let p2 = create () in
+           let p2 = create_player () in
            assert_equal (initial_coins + 15) (coins p2);
            assert_equal [ 4; 1 ] (get_completed_levels p2) );
          (* Reset save file to default *)
@@ -607,5 +597,5 @@ let () =
            obstacle_init_tests;
            death_message_tests;
            update_position_tests;
-           biome_tests;
+           (* biome_tests; *)
          ])

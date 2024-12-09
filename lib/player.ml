@@ -16,7 +16,7 @@ type t = {
 let save_filename = ref "save_game.csv"
 let set_save_file filename = save_filename := filename
 
-let create () =
+let create_player () =
   let player =
     {
       current_skin = SantaJim.draw;

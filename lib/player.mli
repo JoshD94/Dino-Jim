@@ -1,6 +1,6 @@
 type t
 
-val create : unit -> t
+val create_player : unit -> t
 val add_coins : t -> int -> unit
 val add_skin : t -> (float -> float -> int) -> unit
 val add_powerup : t -> string -> unit
