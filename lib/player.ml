@@ -1,6 +1,7 @@
 open Skins
 
 type t = {
+  mutable has_seen_onboarding : bool;
   mutable current_skin : float -> float -> int;
   mutable coins : int;
   mutable skins : (float -> float -> int) list;
@@ -10,16 +11,26 @@ type t = {
   mutable buyable_skins : (float -> float -> int) list;
   mutable powerups : string list;
   mutable completed_levels : int list;
-      (* Added field for tracking completed levels *)
 }
 
 let save_filename = ref "save_game.csv"
 let set_save_file filename = save_filename := filename
 
+let save_state t =
+  try
+    let oc = open_out !save_filename in
+    output_string oc "coins,completed_levels,has_seen_onboarding\n";
+    Printf.fprintf oc "%d,%s,%b\n" t.coins
+      (String.concat ";" (List.map string_of_int t.completed_levels))
+      t.has_seen_onboarding;
+    close_out oc
+  with _ -> ()
+
 let create_player () =
   let player =
     {
-      current_skin = SantaJim.draw;
+      has_seen_onboarding = false;
+      current_skin = DefaultSkin.draw;
       coins = 10;
       skins = [ DefaultSkin.draw; SantaJim.draw; AngryJim.draw ];
       jump_height = 1;
@@ -42,20 +53,23 @@ let create_player () =
   (try
      let ic = open_in !save_filename in
      let _ = input_line ic in
+     (* Skip header *)
      let saved_data = input_line ic in
      let fields = String.split_on_char ',' saved_data in
      (match fields with
-     | coins :: completed_levels_str :: _ ->
+     | coins :: completed_levels_str :: has_seen_onboarding_str :: _ ->
          player.coins <- int_of_string coins;
          player.completed_levels <-
-           List.map int_of_string
-             (String.split_on_char ';' completed_levels_str)
+           (if completed_levels_str = "" then []
+            else
+              List.map int_of_string
+                (String.split_on_char ';' completed_levels_str));
+         player.has_seen_onboarding <- bool_of_string has_seen_onboarding_str
      | _ -> ());
      close_in ic
    with _ -> ());
   player
 
-(* Existing functions remain unchanged *)
 let rec remove_from_buyable skin_list (skin : float -> float -> int) =
   match skin_list with
   | [] -> []
@@ -64,13 +78,13 @@ let rec remove_from_buyable skin_list (skin : float -> float -> int) =
 
 let add_coins t amount =
   t.coins <- t.coins + amount;
-  try
-    let oc = open_out !save_filename in
-    output_string oc "coins,completed_levels\n";
-    Printf.fprintf oc "%d,%s\n" t.coins
-      (String.concat ";" (List.map string_of_int t.completed_levels));
-    close_out oc
-  with _ -> ()
+  save_state t
+
+let complete_onboarding t =
+  t.has_seen_onboarding <- true;
+  save_state t
+
+let has_seen_onboarding t = t.has_seen_onboarding
 
 let add_skin t skin =
   if List.filter (fun x -> x 0. 0. = skin 0. 0.) t.skins = [] then (
@@ -105,21 +119,13 @@ let has_skin t skin = skin_in_list t.skins skin
 let select_skin t skin =
   if skin_in_list t.skins skin then t.current_skin <- skin
 
-(* New functions for level progress *)
 let is_level_unlocked t level =
   level = 1 || List.mem (level - 1) t.completed_levels
 
 let complete_level t level =
   if not (List.mem level t.completed_levels) then begin
     t.completed_levels <- level :: t.completed_levels;
-    (* Save progress to CSV using save_filename reference *)
-    try
-      let oc = open_out !save_filename in
-      output_string oc "coins,completed_levels\n";
-      Printf.fprintf oc "%d,%s\n" t.coins
-        (String.concat ";" (List.map string_of_int t.completed_levels));
-      close_out oc
-    with _ -> ()
+    save_state t
   end
 
 let get_completed_levels t = t.completed_levels

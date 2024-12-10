@@ -11,6 +11,41 @@ let setup () =
 
 let () = setup ()
 
+let test_onboarding () =
+  let test_save = "test_onboarding.csv" in
+  "Onboarding tests"
+  >::: [
+         (* Clean initial state *)
+         ( "initial onboarding state" >:: fun _ ->
+           (try Sys.remove test_save with _ -> ());
+           Player.set_save_file test_save;
+           let p = create_player () in
+           assert_bool "Initial onboarding should be false"
+             (not (has_seen_onboarding p)) );
+         (* Test completing onboarding persists *)
+         ( "completing onboarding persists" >:: fun _ ->
+           (try Sys.remove test_save with _ -> ());
+           Player.set_save_file test_save;
+           let p = create_player () in
+           complete_onboarding p;
+           let p2 = create_player () in
+           assert_bool "Should remember onboarding completion"
+             (has_seen_onboarding p2) );
+         (* Test onboarding state survives with other changes *)
+         ( "onboarding survives other changes" >:: fun _ ->
+           (try Sys.remove test_save with _ -> ());
+           Player.set_save_file test_save;
+           let p = create_player () in
+           complete_onboarding p;
+           add_coins p 50;
+           complete_level p 1;
+           let p2 = create_player () in
+           assert_bool "Should keep onboarding state after other changes"
+             (has_seen_onboarding p2);
+           assert_equal 60 (coins p2);
+           assert_equal [ 1 ] (get_completed_levels p2) );
+       ]
+
 (* Helper function to compare position record type *)
 let assert_position_equal (expected : position) (actual : position) =
   assert_equal expected.x actual.x;
@@ -195,6 +230,7 @@ let player_tests =
          test_add_skins ();
          test_powerups ();
          test_select_skin ();
+         test_onboarding ();
        ]
 
 (* Test Jim.Obstacle.create *)
