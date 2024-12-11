@@ -3,6 +3,7 @@ open Raylib
 open Jim.Player
 open Jim.Game
 open Jim.Obstacle
+open Jim.Chest
 
 (* Obstacle module *)
 
@@ -449,11 +450,11 @@ let init_game lvl obstacle_count speed_mul gravity jump_force biome player () =
   game_loop initial_state player
 
 (* Skin select module *)
-let button_height = 80.0
+let button_height = 40.0
 let button_width = 160.0
 let padding = 120.0
 let grid_cols = 3
-let num_items = 9
+let num_items = 12
 
 let skin_list =
   [|
@@ -466,6 +467,9 @@ let skin_list =
     InvisibleJim.draw;
     OrangeJim.draw;
     DarthJim.draw;
+    MagentaJim.draw;
+    YellowJim.draw;
+    PurpleJim.draw;
   |]
 
 let skin_names =
@@ -479,6 +483,9 @@ let skin_names =
     "Invisible Jim";
     "Orange Jim";
     "Darth Jim";
+    "Magenta Jim";
+    "Yellow Jim";
+    "Purple Jim";
   |]
 
 let check_back_button () =
@@ -489,7 +496,7 @@ let check_back_button () =
     mouse_x >= 20.0 && mouse_x <= 120.0 && mouse_y >= 20.0 && mouse_y <= 60.0
   else false
 
-(* Run function to open the shop *)
+(* Run function to open the skin select menu *)
 let run_skin_select player =
   let screen_width = 1200 in
   let rec game_loop state =
@@ -507,7 +514,7 @@ let run_skin_select player =
         ((screen_width - title_width) / 2)
         40 title_size Color.black;
 
-      (* Draw shop buttons *)
+      (* Draw select buttons *)
       for i = 0 to num_items - 1 do
         let has = has_skin state skin_list.(i) in
         let row = float_of_int (i / grid_cols) in
@@ -542,7 +549,7 @@ let run_skin_select player =
         let text_width = measure_text head text_size in
         let text_x = x +. ((button_width -. float_of_int text_width) /. 2.0) in
         let text_y =
-          y -. 140. +. ((button_height -. float_of_int text_size) /. 2.0)
+          y -. 120. +. ((button_height -. float_of_int text_size) /. 2.0)
         in
         draw_text head (int_of_float text_x) (int_of_float text_y) text_size
           Color.black;
@@ -583,19 +590,29 @@ let button_width = 160.0
 let padding = 120.0
 let grid_cols = 4
 let num_items = 7
+let chest = create_chest ()
 
 let buyable_items =
   [|
-    ("Jump", 0);
-    ("Speed", 0);
-    ("More coins", 0);
-    ("Skin 1", 0);
-    ("Skin 2", 2);
-    ("Skin 3", 2);
-    ("Chest", 10);
+    ("Red Jim", 10);
+    ("Green Jim", 10);
+    ("Blue Jim", 10);
+    ("Orange Jim", 10);
+    ("Purple Jim", 15);
+    ("Yellow Jim", 15);
+    ("Chest", 30);
   |]
 
-let buyable_skins = [| DefaultSkin.draw; DefaultSkin.draw; DefaultSkin.draw |]
+let buyable_skins =
+  [|
+    RedJim.draw;
+    GreenJim.draw;
+    BlueJim.draw;
+    OrangeJim.draw;
+    PurpleJim.draw;
+    YellowJim.draw;
+  |]
+
 let bought_items = [| false; false; false; false; false; false; false |]
 
 (*let rec check_item lst item = match lst with | [] -> false | h :: t -> if item
@@ -616,7 +633,6 @@ let check_back_button () =
 (* Run function to open the shop *)
 let run_shop player =
   let screen_width = 1200 in
-  let player = player in
   let rec game_loop state =
     if window_should_close () then ()
     else if check_back_button () then ()
@@ -634,6 +650,8 @@ let run_shop player =
 
       (* Draw shop buttons *)
       for i = 0 to num_items - 1 do
+        if i < num_items - 1 && has_skin player buyable_skins.(i) then
+          bought_items.(i) <- true;
         let row = float_of_int (i / grid_cols) in
         let col = float_of_int (i mod grid_cols) in
         let x =
@@ -644,13 +662,18 @@ let run_shop player =
         let y = 160.0 +. (row *. (button_height +. padding)) in
 
         (* Draw button *)
-        let color = if bought_items.(i) then Color.maroon else Color.red in
+        let color =
+          if i = num_items - 1 && more_skins chest then Color.red
+          else if bought_items.(i) then Color.maroon
+          else Color.red
+        in
         draw_rectangle (int_of_float x) (int_of_float y)
           (int_of_float button_width)
           (int_of_float button_height)
           color;
         (* Draw Skins *)
-        if i = 3 then ignore (DefaultSkin.draw (x +. 75.) (y -. 65.));
+        if i < num_items - 1 then
+          ignore (buyable_skins.(i) (x +. 75.) (y -. 65.));
         (* Draw back button last so it's always on top *)
         draw_rectangle 20 20 100 40 Color.gray;
         draw_text "Back" 45 30 20 Color.white;
@@ -687,9 +710,12 @@ let run_shop player =
             && coins state >= snd buyable_items.(i)
           then (
             add_coins state (0 - snd buyable_items.(i));
-            bought_items.(i) <- true;
-            if i < 3 then add_powerup state (fst buyable_items.(i));
-            if i > 2 && i < 6 then add_skin state buyable_skins.(i - 3))
+            if i < num_items - 1 then (
+              add_skin player buyable_skins.(i);
+              bought_items.(i) <- true);
+            if i = num_items - 1 then (
+              open_chest chest player;
+              if more_skins chest <> true then bought_items.(i) <- true))
         end
       done;
 
