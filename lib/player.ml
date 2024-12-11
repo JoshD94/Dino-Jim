@@ -4,11 +4,7 @@ type t = {
   mutable current_skin : float -> float -> int;
   mutable coins : int;
   mutable skins : (float -> float -> int) list;
-  mutable jump_height : int;
-  mutable speed : int;
-  mutable coin_multiplier : int;
   mutable buyable_skins : (float -> float -> int) list;
-  mutable powerups : string list;
   mutable completed_levels : int list;
       (* Added field for tracking completed levels *)
 }
@@ -22,19 +18,15 @@ let create_player () =
       current_skin = SantaJim.draw;
       coins = 10;
       skins = [ DefaultSkin.draw; SantaJim.draw; AngryJim.draw ];
-      jump_height = 1;
-      speed = 1;
-      coin_multiplier = 1;
       buyable_skins =
         [
-          GreenJim.draw;
           RedJim.draw;
-          OrangeJim.draw;
+          GreenJim.draw;
           BlueJim.draw;
-          InvisibleJim.draw;
-          DarthJim.draw;
+          OrangeJim.draw;
+          PurpleJim.draw;
+          YellowJim.draw;
         ];
-      powerups = [];
       completed_levels = [];
     }
   in
@@ -60,7 +52,8 @@ let rec remove_from_buyable skin_list (skin : float -> float -> int) =
   match skin_list with
   | [] -> []
   | h :: t ->
-      if h 0. 0. = skin 0. 0. then t else h :: remove_from_buyable t skin
+      if h 10000. 10000. = skin 10000. 10000. then t
+      else h :: remove_from_buyable t skin
 
 let add_coins t amount =
   t.coins <- t.coins + amount;
@@ -73,22 +66,11 @@ let add_coins t amount =
   with _ -> ()
 
 let add_skin t skin =
-  if List.filter (fun x -> x 0. 0. = skin 0. 0.) t.skins = [] then (
+  if List.filter (fun x -> x 10000. 10000. = skin 10000. 10000.) t.skins = []
+  then (
     t.skins <- skin :: t.skins;
     t.buyable_skins <- remove_from_buyable t.buyable_skins skin)
 
-let add_powerup t power =
-  if power = "Jump" then (
-    t.jump_height <- t.jump_height * 2;
-    t.powerups <- "Jump" :: t.powerups)
-  else if power = "More coins" then (
-    t.coin_multiplier <- t.coin_multiplier * 2;
-    t.powerups <- "More coins" :: t.powerups)
-  else if power = "Faster" then (
-    t.speed <- t.speed * 2;
-    t.powerups <- "Faster" :: t.powerups)
-
-let has_powerup t power = List.mem power t.powerups
 let skins t = t.skins
 let coins t = t.coins
 let buyable_skin_list t = t.buyable_skins
