@@ -1,5 +1,7 @@
 type t
 
+val complete_onboarding : t -> unit
+val has_seen_onboarding : t -> bool
 val create_player : unit -> t
 val add_coins : t -> int -> unit
 val add_skin : t -> (float -> float -> int) -> unit

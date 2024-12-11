@@ -728,6 +728,7 @@ let run_shop player =
 (* Menu module *)
 
 type game_state =
+  | Onboarding
   | LevelSelect
   | Level of int
   | Shop
@@ -913,109 +914,198 @@ let update_scroll scroll_state =
   scroll_state.scroll_y <-
     max 0.0 (min scroll_state.scroll_y scroll_state.max_scroll)
 
-let run_menu player =
-  init_window screen_width screen_height "Level Select";
-  set_target_fps 60;
+let word_wrap text max_width font_size =
+  let words = String.split_on_char ' ' text in
+  let rec wrap_lines acc current_line current_width = function
+    | [] -> List.rev (current_line :: acc)
+    | word :: rest ->
+        let word_width = measure_text (word ^ " ") font_size in
+        if current_width + word_width <= max_width then
+          wrap_lines acc
+            (current_line ^ (if current_line = "" then "" else " ") ^ word)
+            (current_width + word_width)
+            rest
+        else wrap_lines (current_line :: acc) word word_width rest
+  in
+  wrap_lines [] "" 0 words
 
-  let scroll_state =
-    {
-      scroll_y = 0.0;
-      scroll_speed = 20.0;
-      max_scroll = total_height -. view_height +. top_padding;
-    }
+let draw_onboarding () =
+  clear_background Color.raywhite;
+
+  (* Draw title *)
+  let title = "The Story of Jim" in
+  let title_size = 40 in
+  let title_width = measure_text title title_size in
+  draw_text title ((screen_width - title_width) / 2) 100 title_size Color.black;
+
+  (* Draw story text *)
+  let story =
+    "Deep in the heart of the prehistoric world, Jim the dinosaur lived \
+     peacefully with his family. But when news spread of an incoming asteroid \
+     threatening their world, Jim found himself separated from his loved ones. \
+     Now he must race against time, crossing through grasslands, rocky \
+     mountains, snowy peaks, and dangerous lava fields to reunite with his \
+     family before it's too late. Help Jim overcome obstacles and navigate \
+     through treacherous terrains in his desperate journey home!"
   in
 
-  let rec game_loop state =
-    if window_should_close () then ()
-    else begin
-      begin_drawing ();
+  (* Draw wrapped story text *)
+  let font_size = 25 in
+  let max_width = 800 in
+  let y = 200 in
+  let line_height = font_size + 10 in
 
-      let next_state =
-        match state with
-        | LevelSelect ->
-            clear_background Color.raywhite;
-            Background.draw scroll_state.scroll_y screen_width screen_height;
+  (* Add some spacing between lines *)
+  let wrapped_lines = word_wrap story max_width font_size in
+  List.iteri
+    (fun i line ->
+      let line_width = measure_text line font_size in
+      let line_x = (screen_width - line_width) / 2 in
+      (* Center each line *)
+      let line_y = y + (i * line_height) in
+      draw_text line line_x line_y font_size Color.black)
+    wrapped_lines;
 
-            let points = get_path_points scroll_state.scroll_y in
-            draw_path points;
+  (* Draw continue button *)
+  let button_width = 200 in
+  let button_height = 60 in
+  let button_x = (screen_width - button_width) / 2 in
+  let button_y = 600 in
 
-            let clicked_level = ref None in
-            for i = 0 to num_levels - 1 do
-              let level_num = i + 1 in
-              let x, y = points.(i) in
-              draw_level_bubble player level_num (x, y);
+  draw_rectangle button_x button_y button_width button_height Color.green;
+  let button_text = "Start Adventure!" in
+  let btn_font_size = 20 in
+  let btn_text_width = measure_text button_text btn_font_size in
+  draw_text button_text
+    (button_x + ((button_width - btn_text_width) / 2))
+    (button_y + ((button_height - btn_font_size) / 2))
+    btn_font_size Color.white;
 
-              if is_mouse_button_pressed MouseButton.Left then begin
-                let mouse_pos = get_mouse_position () in
-                if
-                  check_level_click mouse_pos (x, y)
-                  && is_level_unlocked player level_num
-                then clicked_level := Some level_num
-              end
-            done;
+  (* Draw Jim's character *)
+  ignore
+    (DefaultSkin.draw
+       (float_of_int ((screen_width / 2) - 10))
+       (float_of_int (button_y - 100)));
 
-            update_scroll scroll_state;
+  (* Return if button was clicked *)
+  if is_mouse_button_pressed MouseButton.Left then
+    let mouse_pos = get_mouse_position () in
+    let mouse_x = Vector2.x mouse_pos in
+    let mouse_y = Vector2.y mouse_pos in
+    mouse_x >= float_of_int button_x
+    && mouse_x <= float_of_int (button_x + button_width)
+    && mouse_y >= float_of_int button_y
+    && mouse_y <= float_of_int (button_y + button_height)
+  else false
 
-            let shop_x, shop_y, shop_width, shop_height = draw_header () in
-            let select_x, select_y, select_width, select_height =
-              draw_skin_select_header ()
-            in
-            draw_title ();
+let rec game_loop state player scroll_state =
+  if window_should_close () then ()
+  else begin
+    begin_drawing ();
+
+    let next_state =
+      match state with
+      | Onboarding ->
+          if draw_onboarding () then (
+            complete_onboarding player;
+            LevelSelect)
+          else Onboarding
+      | LevelSelect ->
+          clear_background Color.raywhite;
+          Background.draw scroll_state.scroll_y screen_width screen_height;
+
+          let points = get_path_points scroll_state.scroll_y in
+          draw_path points;
+
+          let clicked_level = ref None in
+          for i = 0 to num_levels - 1 do
+            let level_num = i + 1 in
+            let x, y = points.(i) in
+            draw_level_bubble player level_num (x, y);
 
             if is_mouse_button_pressed MouseButton.Left then begin
               let mouse_pos = get_mouse_position () in
-              let mouse_x = Vector2.x mouse_pos in
-              let mouse_y = Vector2.y mouse_pos in
               if
-                mouse_x >= float_of_int shop_x
-                && mouse_x <= float_of_int (shop_x + shop_width)
-                && mouse_y >= float_of_int shop_y
-                && mouse_y <= float_of_int (shop_y + shop_height)
-              then Shop
-              else if
-                mouse_x >= float_of_int select_x
-                && mouse_x <= float_of_int (select_x + select_width)
-                && mouse_y >= float_of_int select_y
-                && mouse_y <= float_of_int (select_y + select_height)
-              then SkinSelect
-              else
-                match !clicked_level with
-                | Some n -> Level n
-                | None -> LevelSelect
+                check_level_click mouse_pos (x, y)
+                && is_level_unlocked player level_num
+              then clicked_level := Some level_num
             end
-            else LevelSelect
-        | Level n ->
-            let obstacle_count = calculate_obstacle_count n in
-            let starting_level = n in
-            let speed_multiplier =
-              int_of_float (1. +. (0.2 *. float_of_int n))
-            in
-            let gravity = 1. +. (0.2 *. float_of_int n) in
-            let jump_force = -18.0 -. (1. +. (1. *. float_of_int n)) in
-            let biome = get_biome_for_level n in
+          done;
 
-            ignore
-              (init_game starting_level obstacle_count speed_multiplier gravity
-                 jump_force biome player ());
+          update_scroll scroll_state;
 
-            LevelSelect
-        | Shop ->
-            run_shop player;
-            LevelSelect
-        | SkinSelect ->
-            run_skin_select player;
-            LevelSelect
-      in
+          let shop_x, shop_y, shop_width, shop_height = draw_header () in
+          let select_x, select_y, select_width, select_height =
+            draw_skin_select_header ()
+          in
+          draw_title ();
 
-      end_drawing ();
-      game_loop next_state
-    end
+          if is_mouse_button_pressed MouseButton.Left then begin
+            let mouse_pos = get_mouse_position () in
+            let mouse_x = Vector2.x mouse_pos in
+            let mouse_y = Vector2.y mouse_pos in
+            if
+              mouse_x >= float_of_int shop_x
+              && mouse_x <= float_of_int (shop_x + shop_width)
+              && mouse_y >= float_of_int shop_y
+              && mouse_y <= float_of_int (shop_y + shop_height)
+            then Shop
+            else if
+              mouse_x >= float_of_int select_x
+              && mouse_x <= float_of_int (select_x + select_width)
+              && mouse_y >= float_of_int select_y
+              && mouse_y <= float_of_int (select_y + select_height)
+            then SkinSelect
+            else
+              match !clicked_level with
+              | Some n -> Level n
+              | None -> LevelSelect
+          end
+          else LevelSelect
+      | Level n ->
+          let obstacle_count = calculate_obstacle_count n in
+          let starting_level = n in
+          let speed_multiplier = int_of_float (1. +. (0.2 *. float_of_int n)) in
+          let gravity = 1. +. (0.2 *. float_of_int n) in
+          let jump_force = -18.0 -. (1. +. (1. *. float_of_int n)) in
+          let biome = get_biome_for_level n in
+
+          ignore
+            (init_game starting_level obstacle_count speed_multiplier gravity
+               jump_force biome player ());
+
+          LevelSelect
+      | Shop ->
+          run_shop player;
+          LevelSelect
+      | SkinSelect ->
+          run_skin_select player;
+          LevelSelect
+    in
+
+    end_drawing ();
+    game_loop next_state player scroll_state
+  end
+
+let create_scroll_state () =
+  {
+    scroll_y = 0.0;
+    scroll_speed = 20.0;
+    max_scroll = total_height -. view_height +. top_padding;
+  }
+
+let run_menu player =
+  init_window screen_width screen_height "Jim's Adventure";
+  set_target_fps 60;
+
+  let scroll_state = create_scroll_state () in
+  let initial_state =
+    if has_seen_onboarding player then LevelSelect else Onboarding
   in
-  game_loop LevelSelect
 
-let player = create_player ()
+  game_loop initial_state player scroll_state;
+  close_window ()
 
 let () =
-  run_menu player;
-  close_window ()
-(* let () = run_shop (); close_window () *)
+  let player = create_player () in
+  run_menu player
