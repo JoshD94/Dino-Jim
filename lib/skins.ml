@@ -70,16 +70,16 @@ module AngryJim : Skin = struct
     2
 end
 
-module GreenJim : Skin = struct
+module RedJim : Skin = struct
   let draw x y =
-    draw_default_with_color Color.green x y;
+    draw_default_with_color Color.red x y;
     (* Unique Skin Identifier *)
     3
 end
 
-module RedJim : Skin = struct
+module GreenJim : Skin = struct
   let draw x y =
-    draw_default_with_color Color.red x y;
+    draw_default_with_color Color.green x y;
     (* Unique Skin Identifier *)
     4
 end
@@ -91,18 +91,32 @@ module BlueJim : Skin = struct
     5
 end
 
-module InvisibleJim : Skin = struct
-  let draw x y =
-    draw_default_with_color Color.white x y;
-    (* Unique Skin Identifier *)
-    6
-end
-
 module OrangeJim : Skin = struct
   let draw x y =
     draw_default_with_color Color.orange x y;
     (* Unique Skin Identifier *)
+    6
+end
+
+module PurpleJim : Skin = struct
+  let draw x y =
+    draw_default_with_color Color.purple x y;
+    (* Unique Skin Identifier *)
     7
+end
+
+module YellowJim : Skin = struct
+  let draw x y =
+    draw_default_with_color Color.yellow x y;
+    (* Unique Skin Identifier *)
+    8
+end
+
+module InvisibleJim : Skin = struct
+  let draw x y =
+    draw_default_with_color Color.white x y;
+    (* Unique Skin Identifier *)
+    9
 end
 
 module DarthJim : Skin = struct
@@ -111,5 +125,12 @@ module DarthJim : Skin = struct
     (* Eye *)
     draw_rectangle (int_of_float x + 18) (int_of_float y + 5) 3 3 Color.red;
     (* Unique Skin Identifier *)
-    8
+    10
+end
+
+module MagentaJim : Skin = struct
+  let draw x y =
+    draw_default_with_color Color.magenta x y;
+    (* Unique Skin Identifier *)
+    11
 end
