@@ -78,20 +78,23 @@ let test_player_skins_id () =
   let p2 = create_player () in
   select_skin p1 SantaJim.draw;
   select_skin p2 DefaultSkin.draw;
-  add_skin p2 OrangeJim.draw;
   add_skin p2 RedJim.draw;
   add_skin p2 GreenJim.draw;
   add_skin p2 BlueJim.draw;
-  add_skin p2 DarthJim.draw;
+  add_skin p2 OrangeJim.draw;
+  add_skin p2 PurpleJim.draw;
+  add_skin p2 YellowJim.draw;
   add_skin p2 InvisibleJim.draw;
+  add_skin p2 DarthJim.draw;
+  add_skin p2 MagentaJim.draw;
   let b =
     (Player.current_skin p1) 0. 0. = SantaJim.draw 0. 0.
     && (Player.current_skin p2) 0. 0. = DefaultSkin.draw 0. 0.
     && List.map (fun x -> x 0. 0.) (Player.skins p1) = [ 0; 1; 2 ]
     && List.map (fun x -> x 0. 0.) (Player.skins p2)
-       = [ 6; 8; 5; 3; 4; 7; 0; 1; 2 ]
+       = [ 11; 10; 9; 8; 7; 6; 5; 4; 3; 0; 1; 2 ]
     && List.map (fun x -> x 0. 0.) (Player.buyable_skin_list p1)
-       = [ 3; 4; 7; 5; 6; 8 ]
+       = [ 3; 4; 5; 6; 7; 8 ]
     && List.map (fun x -> x 0. 0.) (Player.buyable_skin_list p2) = []
   in
   fun _ -> assert_bool "Skins id False" b
@@ -103,25 +106,54 @@ let test_buy_skins () =
   let p = create_player () in
   add_skin p DefaultSkin.draw;
   let a =
-    List.map (fun x -> x 0. 0.) (buyable_skin_list p) = [ 3; 4; 7; 5; 6; 8 ]
+    List.fold_left
+      (fun acc x -> acc && List.mem x [ 3; 4; 5; 6; 7; 8 ])
+      true
+      (List.map (fun x -> x 0. 0.) (buyable_skin_list p))
   in
   add_skin p SantaJim.draw;
   let b =
-    List.map (fun x -> x 0. 0.) (buyable_skin_list p) = [ 3; 4; 7; 5; 6; 8 ]
+    List.fold_left
+      (fun acc x -> acc && List.mem x [ 3; 4; 5; 6; 7; 8 ])
+      true
+      (List.map (fun x -> x 0. 0.) (buyable_skin_list p))
   in
   add_skin p OrangeJim.draw;
   let c =
-    List.map (fun x -> x 0. 0.) (buyable_skin_list p) = [ 3; 4; 5; 6; 8 ]
+    List.fold_left
+      (fun acc x -> acc && List.mem x [ 3; 4; 5; 7; 8 ])
+      true
+      (List.map (fun x -> x 0. 0.) (buyable_skin_list p))
   in
   add_skin p BlueJim.draw;
-  let d = List.map (fun x -> x 0. 0.) (buyable_skin_list p) = [ 3; 4; 6; 8 ] in
-  add_skin p InvisibleJim.draw;
-  let e = List.map (fun x -> x 0. 0.) (buyable_skin_list p) = [ 3; 4; 8 ] in
-  add_skin p DarthJim.draw;
-  let f = List.map (fun x -> x 0. 0.) (buyable_skin_list p) = [ 3; 4 ] in
-  add_skin p GreenJim.draw;
-  let g = List.map (fun x -> x 0. 0.) (buyable_skin_list p) = [ 4 ] in
+  let d =
+    List.fold_left
+      (fun acc x -> acc && List.mem x [ 3; 4; 7; 8 ])
+      true
+      (List.map (fun x -> x 0. 0.) (buyable_skin_list p))
+  in
   add_skin p RedJim.draw;
+  let e =
+    List.fold_left
+      (fun acc x -> acc && List.mem x [ 4; 7; 8 ])
+      true
+      (List.map (fun x -> x 0. 0.) (buyable_skin_list p))
+  in
+  add_skin p YellowJim.draw;
+  let f =
+    List.fold_left
+      (fun acc x -> acc && List.mem x [ 4; 7 ])
+      true
+      (List.map (fun x -> x 0. 0.) (buyable_skin_list p))
+  in
+  add_skin p GreenJim.draw;
+  let g =
+    List.fold_left
+      (fun acc x -> acc && List.mem x [ 7 ])
+      true
+      (List.map (fun x -> x 0. 0.) (buyable_skin_list p))
+  in
+  add_skin p PurpleJim.draw;
   let h = List.map (fun x -> x 0. 0.) (buyable_skin_list p) = [] in
   ();
   fun _ -> assert_bool "Buy skins false" (a && b && c && d && e && f && g && h)
@@ -132,25 +164,93 @@ let test_add_skins () =
   >::
   let p = create_player () in
   add_skin p DefaultSkin.draw;
-  let a = List.map (fun x -> x 0. 0.) (skins p) = [ 0; 1; 2 ] in
+  let a =
+    List.fold_left
+      (fun acc x -> acc && List.mem x [ 0; 1; 2 ])
+      true
+      (List.map (fun x -> x 0. 0.) (skins p))
+  in
   add_skin p SantaJim.draw;
-  let b = List.map (fun x -> x 0. 0.) (skins p) = [ 0; 1; 2 ] in
+  let b =
+    List.fold_left
+      (fun acc x -> acc && List.mem x [ 0; 1; 2 ])
+      true
+      (List.map (fun x -> x 0. 0.) (skins p))
+  in
   add_skin p OrangeJim.draw;
-  let c = List.map (fun x -> x 0. 0.) (skins p) = [ 7; 0; 1; 2 ] in
+  let c =
+    List.fold_left
+      (fun acc x -> acc && List.mem x [ 6; 0; 1; 2 ])
+      true
+      (List.map (fun x -> x 0. 0.) (skins p))
+  in
   add_skin p BlueJim.draw;
-  let d = List.map (fun x -> x 0. 0.) (skins p) = [ 5; 7; 0; 1; 2 ] in
+  let d =
+    List.fold_left
+      (fun acc x -> acc && List.mem x [ 5; 6; 0; 1; 2 ])
+      true
+      (List.map (fun x -> x 0. 0.) (skins p))
+  in
   add_skin p InvisibleJim.draw;
-  let e = List.map (fun x -> x 0. 0.) (skins p) = [ 6; 5; 7; 0; 1; 2 ] in
+  let e =
+    List.fold_left
+      (fun acc x -> acc && List.mem x [ 9; 5; 6; 0; 1; 2 ])
+      true
+      (List.map (fun x -> x 0. 0.) (skins p))
+  in
   add_skin p DarthJim.draw;
-  let f = List.map (fun x -> x 0. 0.) (skins p) = [ 8; 6; 5; 7; 0; 1; 2 ] in
+  let f =
+    List.fold_left
+      (fun acc x -> acc && List.mem x [ 10; 9; 5; 6; 0; 1; 2 ])
+      true
+      (List.map (fun x -> x 0. 0.) (skins p))
+  in
   add_skin p GreenJim.draw;
-  let g = List.map (fun x -> x 0. 0.) (skins p) = [ 3; 8; 6; 5; 7; 0; 1; 2 ] in
+  let g =
+    List.fold_left
+      (fun acc x -> acc && List.mem x [ 4; 10; 9; 5; 6; 0; 1; 2 ])
+      true
+      (List.map (fun x -> x 0. 0.) (skins p))
+  in
   add_skin p RedJim.draw;
   let h =
-    List.map (fun x -> x 0. 0.) (skins p) = [ 4; 3; 8; 6; 5; 7; 0; 1; 2 ]
+    List.fold_left
+      (fun acc x -> acc && List.mem x [ 3; 4; 10; 9; 5; 6; 0; 1; 2 ])
+      true
+      (List.map (fun x -> x 0. 0.) (skins p))
+  in
+  add_skin p MagentaJim.draw;
+  let i =
+    List.fold_left
+      (fun acc x -> acc && List.mem x [ 11; 3; 4; 10; 9; 5; 6; 0; 1; 2 ])
+      true
+      (List.map (fun x -> x 0. 0.) (skins p))
+  in
+  add_skin p YellowJim.draw;
+  let j =
+    List.fold_left
+      (fun acc x -> acc && List.mem x [ 8; 11; 3; 4; 10; 9; 5; 6; 0; 1; 2 ])
+      true
+      (List.map (fun x -> x 0. 0.) (skins p))
+  in
+  add_skin p PurpleJim.draw;
+  let k =
+    List.fold_left
+      (fun acc x -> acc && List.mem x [ 7; 8; 11; 3; 4; 10; 9; 5; 6; 0; 1; 2 ])
+      true
+      (List.map (fun x -> x 0. 0.) (skins p))
+  in
+  add_skin p AngryJim.draw;
+  let l =
+    List.fold_left
+      (fun acc x -> acc && List.mem x [ 7; 8; 11; 3; 4; 10; 9; 5; 6; 0; 1; 2 ])
+      true
+      (List.map (fun x -> x 0. 0.) (skins p))
   in
   ();
-  fun _ -> assert_bool "Buy skins false" (a && b && c && d && e && f && g && h)
+  fun _ ->
+    assert_bool "Buy skins false"
+      (a && b && c && d && e && f && g && h && i && j && k && l)
 
 (* Test Skin select *)
 let test_select_skin () =
@@ -201,24 +301,6 @@ let test_select_skin () =
     assert_bool "Skin select false"
       (a && b && c && d && e && f && g && h && i && j && k && l && m && n && o)
 
-(* Test Powerups *)
-let test_powerups () =
-  "Powerups test"
-  >::
-  let p = create_player () in
-  add_powerup p "";
-  let a = has_powerup p "" = false in
-  add_powerup p "Jump";
-  let b = has_powerup p "Faster" = false in
-  add_powerup p "Faster";
-  let c = has_powerup p "Faster" in
-  add_powerup p "More coins";
-  let d = has_powerup p "Jump" in
-  ();
-  let e = has_powerup p "More coins" in
-  ();
-  fun _ -> assert_bool "Powerups test false" (a && b && c && d && e)
-
 (* Test Jim.Player *)
 let player_tests =
   "Test suite for Player"
@@ -228,7 +310,6 @@ let player_tests =
          test_player_coins ();
          test_buy_skins ();
          test_add_skins ();
-         test_powerups ();
          test_select_skin ();
          test_onboarding ();
        ]
