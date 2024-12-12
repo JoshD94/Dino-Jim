@@ -5,6 +5,64 @@ open Jim.Game
 open Jim.Obstacle
 open Jim.Chest
 
+module Background = struct
+  let grass_rgb = (34, 139, 34) (* Green *)
+  let snow_rgb = (135, 206, 235) (* Light Blue *)
+  let rock_rgb = (128, 128, 128) (* Gray *)
+  let lava_rgb = (178, 34, 34) (* Red *)
+
+  (* Helper for linear interpolation of a single number *)
+  let lerp a b t =
+    let t = max 0.0 (min 1.0 t) in
+    (a *. (1.0 -. t)) +. (b *. t)
+
+  (* Get biome based on level number *)
+  let get_biome_for_level level =
+    if level <= 3 then grass_rgb
+    else if level <= 6 then snow_rgb
+    else if level <= 9 then rock_rgb
+    else lava_rgb
+
+  (* Draw the background with gradual color transitions *)
+  let draw scroll_y screen_width screen_height =
+    let level_height = float_of_int screen_height *. 0.333 in
+
+    (* Calculate current level and transition progress *)
+    let level_position = scroll_y /. level_height in
+    let current_level = int_of_float level_position + 1 in
+    let next_level = current_level + 1 in
+
+    (* Get RGB values for current and next levels *)
+    let current_rgb = get_biome_for_level current_level in
+    let next_rgb = get_biome_for_level next_level in
+
+    (* Calculate transition progress within the level *)
+    let transition_progress =
+      level_position -. float_of_int (current_level - 1)
+    in
+
+    (* Get RGB components *)
+    let r1, g1, b1 = current_rgb in
+    let r2, g2, b2 = next_rgb in
+
+    (* Interpolate RGB components *)
+    let r =
+      int_of_float
+        (lerp (float_of_int r1) (float_of_int r2) transition_progress)
+    in
+    let g =
+      int_of_float
+        (lerp (float_of_int g1) (float_of_int g2) transition_progress)
+    in
+    let b =
+      int_of_float
+        (lerp (float_of_int b1) (float_of_int b2) transition_progress)
+    in
+
+    (* Draw the interpolated color *)
+    draw_rectangle 0 0 screen_width screen_height (Color.create r g b 255)
+end
+
 (* Obstacle module *)
 
 type obstacle = Jim.Obstacle.t
@@ -400,6 +458,7 @@ let init_game lvl obstacle_count speed_mul gravity jump_force biome player () =
     else if check_back_button () then ()
     else if (state.completed || state.died) && check_retry_button () then (
       if state.completed then complete_level player lvl;
+      if state.died then () else add_coins player (get_level_reward lvl);
       ())
     else
       (* Update game state *)
@@ -748,7 +807,7 @@ let total_height = float_of_int num_levels *. level_spacing
 let screen_width = 1200
 let screen_height = 800
 let top_padding = 90.0
-let calculate_obstacle_count level = 10 + ((level - 1) * 5)
+let calculate_obstacle_count level = 10 + ((level - 1) * 3)
 
 let get_biome_for_level level =
   if level <= 3 then "grass"
@@ -1065,7 +1124,7 @@ let rec game_loop state player scroll_state =
       | Level n ->
           let obstacle_count = calculate_obstacle_count n in
           let starting_level = n in
-          let speed_multiplier = int_of_float (1. +. (0.2 *. float_of_int n)) in
+          let speed_multiplier = int_of_float (2. +. (0.2 *. float_of_int n)) in
           let gravity = 1. +. (0.2 *. float_of_int n) in
           let jump_force = -18.0 -. (1. +. (1. *. float_of_int n)) in
           let biome = get_biome_for_level n in
