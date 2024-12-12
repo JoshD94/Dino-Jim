@@ -5,7 +5,14 @@ type t = {
   mutable skin : float -> float -> int;
 }
 
-let init_skins = [ InvisibleJim.draw; DarthJim.draw; MagentaJim.draw ]
+let init_skins =
+  [
+    InvisibleJim.draw;
+    DarthJim.draw;
+    MagentaJim.draw;
+    SantaJim.draw;
+    AngryJim.draw;
+  ]
 
 let create_chest () =
   { skin_lst = List.tl init_skins; skin = List.hd init_skins }
