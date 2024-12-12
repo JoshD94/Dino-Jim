@@ -733,6 +733,7 @@ let run_shop player =
         (* Draw Skins *)
         if i < num_items - 1 then
           ignore (buyable_skins.(i) (x +. 75.) (y -. 65.));
+        if i = num_items - 1 then draw_chest (x +. 60.) (y -. 45.);
         (* Draw back button last so it's always on top *)
         draw_rectangle 20 20 100 40 Color.gray;
         draw_text "Back" 45 30 20 Color.white;
