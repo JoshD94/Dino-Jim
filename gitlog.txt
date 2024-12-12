@@ -1,3 +1,516 @@
+commit 54f3a6fc5d0d9d9f08c9beba64421a5b9a13211c
+Author: jd2262 <jd2262@cornell.edu>
+Date:   Thu Dec 12 13:34:39 2024 -0500
+
+    Added changes to Authors file
+
+commit ed981b9e5ef6ceae1fdd70d3e8d19b7788a84512
+Author: jd2262 <jd2262@cornell.edu>
+Date:   Wed Dec 11 22:23:35 2024 -0500
+
+    Added skins and level tests
+
+commit 9d61ee938f8088715fd147b682ec5a8ef54d57ce
+Author: Evan Navar Root <etn32@cornell.edu>
+Date:   Wed Dec 11 22:43:33 2024 -0500
+
+    Add draw chest function
+
+commit f601569ef2bbd93f0365f0462128b9e8bdbc0240
+Author: Evan Navar Root <etn32@cornell.edu>
+Date:   Wed Dec 11 22:43:27 2024 -0500
+
+    Add drawing of chest to shop
+
+commit 94a220d45ed59efab605ae97da8b0fd91d061b0c
+Merge: 4fc1623 7e69a7b
+Author: Evan Navar Root <etn32@cornell.edu>
+Date:   Wed Dec 11 22:22:39 2024 -0500
+
+    Merge remote-tracking branch 'refs/remotes/origin/main'
+
+commit 4fc162342951d639b26d11bf8f615c8ce8c4cee8
+Author: Evan Navar Root <etn32@cornell.edu>
+Date:   Wed Dec 11 22:22:18 2024 -0500
+
+    refactor test
+
+commit 7e69a7b67a5c1563f248855f9a3c8bb4d681be1a
+Author: George Margono <gm564@cornell.edu>
+Date:   Wed Dec 11 22:11:19 2024 -0500
+
+    Uncommented biome level tests
+
+commit 138d5e15ff06d5262e7564b819c51cb59fde7258
+Author: Evan Navar Root <etn32@cornell.edu>
+Date:   Wed Dec 11 21:57:30 2024 -0500
+
+    add documentation for save_state
+
+commit 1ff8268400b47560004beeff174ccd03775b3678
+Author: Evan Navar Root <etn32@cornell.edu>
+Date:   Wed Dec 11 21:57:19 2024 -0500
+
+    add more skins to chest
+
+commit 98df36229dc4eac7a3f2c69cec1a051482d2c723
+Author: Evan Navar Root <etn32@cornell.edu>
+Date:   Wed Dec 11 21:57:13 2024 -0500
+
+    fix shop bug where skins don't save
+
+commit 83490f457b81710a7ef0fce03bd1bed97995e8d0
+Author: jd2262 <jd2262@cornell.edu>
+Date:   Wed Dec 11 21:20:17 2024 -0500
+
+    Added documentation for game and obstacle
+
+commit 9769c984ef6c40c28de3ad42a132899035ee5132
+Author: Evan Navar Root <etn32@cornell.edu>
+Date:   Wed Dec 11 21:49:22 2024 -0500
+
+    fix big
+
+commit cc375e8fffeeec6462501347146ce2ed2e5dd54a
+Merge: 426f957 c8dbe51
+Author: George Margono <gm564@cornell.edu>
+Date:   Wed Dec 11 21:43:13 2024 -0500
+
+    Merge branch 'main' of github.coecis.cornell.edu:etn32/Jim
+
+commit 426f957fe3870304983ce50b2a7b09d883f31583
+Merge: d1b8482 270cbb6
+Author: George Margono <gm564@cornell.edu>
+Date:   Wed Dec 11 21:41:34 2024 -0500
+
+    Merge branch 'main' of github.coecis.cornell.edu:etn32/Jim
+
+commit c8dbe5147f4564b6a69368a88f70a8f42b45609f
+Author: Evan Navar Root <etn32@cornell.edu>
+Date:   Wed Dec 11 21:39:32 2024 -0500
+
+    Document skin module
+
+commit d1b84828a2582d894c30a3a595110ea79cdd004e
+Author: George Margono <gm564@cornell.edu>
+Date:   Wed Dec 11 21:36:42 2024 -0500
+
+    Implementing saving skins
+
+commit 270cbb61ab13859bd13cdefe8bf39fce9b44017a
+Author: Evan Navar Root <etn32@cornell.edu>
+Date:   Wed Dec 11 21:35:39 2024 -0500
+
+    fix bug in load skins
+
+commit df98c93e24f6e12ca36c830ea736d9dc8c7d34fb
+Author: Evan Navar Root <etn32@cornell.edu>
+Date:   Wed Dec 11 21:15:10 2024 -0500
+
+    Document player:
+    - documentation for the player module
+
+commit ffc8d1dd407ea92f55940dbb4445ff0c4172eacc
+Author: Evan Navar Root <etn32@cornell.edu>
+Date:   Wed Dec 11 21:14:57 2024 -0500
+
+    Document chest:
+    - documentation for the chest module
+
+commit 4b517746db676e7405d24c4ce4dc4e9d1b456c53
+Merge: 4434bf7 d8780e6
+Author: jd2262 <jd2262@cornell.edu>
+Date:   Wed Dec 11 20:46:10 2024 -0500
+
+    Merge branch 'main' of github.coecis.cornell.edu:etn32/Jim
+
+commit 4434bf7eb7832d34cf7f43881d29d445d11efa1a
+Author: jd2262 <jd2262@cornell.edu>
+Date:   Wed Dec 11 20:45:48 2024 -0500
+
+    Refactored background and game logic
+    
+    - Moved background.ml into main file
+    - Changed obstacle multiplier to +3 per level
+    - Increased speed multiplier
+
+commit d8780e657d640aff4af9165c4ebbd019f44cc643
+Author: Evan Navar Root <etn32@cornell.edu>
+Date:   Wed Dec 11 20:37:12 2024 -0500
+
+    Change description
+
+commit b7553fb0c3f9b9d0b955a20f12244e97f702a606
+Author: Evan Navar Root <etn32@cornell.edu>
+Date:   Wed Dec 11 20:23:04 2024 -0500
+
+    edit load_skins:
+    - no longer visible outside moduke
+    - player no longer specified
+
+commit b9b977b08bd1213552074ed1ac519366df181d06
+Author: Evan Navar Root <etn32@cornell.edu>
+Date:   Wed Dec 11 20:17:17 2024 -0500
+
+    implement load_skins:
+    - loads the skins into the player instance from an int list that comes from a csv save file
+
+commit 51adaa63087ea2ce7ab4c98c3cd37e231f6b99f3
+Author: Evan Navar Root <etn32@cornell.edu>
+Date:   Wed Dec 11 20:06:47 2024 -0500
+
+    Add chest test:
+    - added tests for the chest module
+
+commit 456758e4db8554f104bd0a159677f320565f9634
+Author: Evan Navar Root <etn32@cornell.edu>
+Date:   Wed Dec 11 15:59:33 2024 -0500
+
+    Fix tests:
+    - had to refactor test code after previous changes to the player module
+
+commit 70a0b10e4ab35edb28d94b0e0b21cc211288c298
+Merge: b30ae3b 5c773ff
+Author: Evan Navar Root <etn32@cornell.edu>
+Date:   Wed Dec 11 06:04:47 2024 -0500
+
+    Merge remote-tracking branch 'refs/remotes/origin/main'
+
+commit b30ae3b23a37f0788d1550cd224fb5ddbe50c1b5
+Author: Evan Navar Root <etn32@cornell.edu>
+Date:   Wed Dec 11 06:03:30 2024 -0500
+
+    Add more skins:
+    - more obtainable skins added to the module
+
+commit 71f807a16c7908a5d2f301d5720a5d72b1b888a2
+Author: Evan Navar Root <etn32@cornell.edu>
+Date:   Wed Dec 11 06:03:12 2024 -0500
+
+    Remove powerups:
+    - powerups are removed from the game
+
+commit a563a2c28009ba5ad5358a02a00b0dcb72d4da96
+Author: Evan Navar Root <etn32@cornell.edu>
+Date:   Wed Dec 11 06:02:40 2024 -0500
+
+    Fix bug:
+    - Chests will now select a skins from a list of not buyable skins
+
+commit 15422a8292ff3bd8346137826ed07213c2b4b55d
+Author: Evan Navar Root <etn32@cornell.edu>
+Date:   Wed Dec 11 06:02:07 2024 -0500
+
+    Finish show:
+    - can buys skins and chests with coins
+
+commit 5c773fff5c80fe29bbb73300aca65f9c04c1dc89
+Author: jd2262 <jd2262@cornell.edu>
+Date:   Tue Dec 10 14:57:37 2024 -0500
+
+    Implemented user onboarding
+    
+    - Added intro screen that only shows once
+    - Implemented onboarding logic with state stored in csv
+    - Added testing for onboarding state saving
+
+commit f0e64b6a39f88a3051b9690575c91bac6860d64a
+Merge: 4acefc7 f94f283
+Author: George Margono <gm564@cornell.edu>
+Date:   Sun Dec 8 22:59:54 2024 -0500
+
+    Merging csv testing changes
+    
+    - Implemented csv testing
+    - Resolved merge conflicts between refactoring and new tests
+
+commit 4acefc7254aebcf6c17d3edb2d905c802bdbbbd9
+Author: George Margono <gm564@cornell.edu>
+Date:   Sun Dec 8 22:48:02 2024 -0500
+
+    CSV testing
+
+commit f94f28331feeffdc1d95692210ba819d28f1ff79
+Author: jd2262 <jd2262@cornell.edu>
+Date:   Wed Dec 4 21:44:33 2024 -0500
+
+    Refactored and moved GUI elements to main
+    
+    - Moved most of game.ml to main
+    - Moved most of obstacle.ml to main
+    - Changed game.mli and obstacle.mli respectively
+    - Cleaned up and made only one instance of obstacle record type in obstacle.ml
+
+commit 80540d8e32a40ab659e80a5d0c12d0f39ff7f54f
+Author: Evan Navar Root <etn32@cornell.edu>
+Date:   Wed Dec 4 20:56:58 2024 -0500
+
+    Move lots of code around ;)
+
+commit b6e3f3b8ea4dc3d03a969aa2d23b46450999d700
+Author: Evan Navar Root <etn32@cornell.edu>
+Date:   Wed Dec 4 16:30:28 2024 -0500
+
+    Implement skinSelect menu:
+    - Menu that allows the player to select a skin from a menu to use in the levels.
+
+commit bd7c46780f7860908770f8b60e20a01616514d30
+Author: Evan Navar Root <etn32@cornell.edu>
+Date:   Wed Dec 4 16:29:49 2024 -0500
+
+    Add more documentation to skins
+
+commit 8f11025f60cdbec84e8391a56ffbf24fbc219505
+Author: Evan Navar Root <etn32@cornell.edu>
+Date:   Wed Dec 4 16:29:28 2024 -0500
+
+    Add has_skin:
+    - checks if a player has a specified skin
+
+commit 53c589efead12a53e6648e072f5944093d69a319
+Author: Evan Navar Root <etn32@cornell.edu>
+Date:   Wed Dec 4 16:29:07 2024 -0500
+
+    Add skin_select_menu button:
+    - can now go to skin select menu by clicking the button
+
+commit d6e9a09394c6b2c4c910bbe270ce81dae03dfe08
+Author: Evan Navar Root <etn32@cornell.edu>
+Date:   Sun Dec 1 17:46:44 2024 -0600
+
+    Fix skins equality bug:
+    - Fixed a bug where the functions that test skin equality would return false when it should be true
+
+commit ef43b387c8c265bc55aadb74a2861deb0fce0e3b
+Author: Evan Navar Root <etn32@cornell.edu>
+Date:   Sun Dec 1 17:46:00 2024 -0600
+
+    Add tests for Player module:
+    - Made a test suite for the player module that tests all the functions
+
+commit be7fcd2c0159effb7defb8825975d154a9b46c67
+Author: Evan Navar Root <etn32@cornell.edu>
+Date:   Sat Nov 30 21:22:01 2024 -0600
+
+    Add default draw function:
+    - A draw function that can draw the default skin has been added to factor out a bunch of repeated code in the Skin modules.
+    - This function draws the default skin with a specified color for the body
+
+commit defc966cc9eafe6c10125e98a1398c1a6e6491e6
+Author: jd2262 <jd2262@cornell.edu>
+Date:   Fri Nov 29 20:50:55 2024 -0500
+
+    Implemented tests for obstacle, game, menu functions
+
+commit 6d5139bfbddb5aeb98cd115b4bd66dcbc919c1f7
+Author: George Margono <gm564@cornell.edu>
+Date:   Fri Nov 29 19:26:22 2024 -0500
+
+    <Adjusted game.ml>
+    
+    - In the game_loop function, I made sure that if state is completed then it unlocks next level
+
+commit 986f3de47fabba53d16aaaa5c72b409fed490ca4
+Author: George Margono <gm564@cornell.edu>
+Date:   Fri Nov 29 19:10:37 2024 -0500
+
+    <Implemented CSV saving>
+    
+    - Added a saving feature and locks for levels not opened
+
+commit d6d94f406df6c773e7370592f8753bfd09b2a0b8
+Merge: 72f4131 bcc6cfb
+Author: jd2262 <jd2262@cornell.edu>
+Date:   Wed Nov 20 21:36:38 2024 -0500
+
+    Fixed game distance bug
+    
+    - Fixed game distance bug caused by refs
+
+commit 72f4131da7274f7d014bf4f145d14418cc4dc871
+Author: jd2262 <jd2262@cornell.edu>
+Date:   Wed Nov 20 21:26:25 2024 -0500
+
+    Fixed game distance bug
+    
+    - Fixed game bug where distance would accumulate do to refs
+
+commit bcc6cfb18fecfe7b3779781526d7d7fd2dc46b6c
+Author: Evan Navar Root <etn32@cornell.edu>
+Date:   Wed Nov 20 21:09:50 2024 -0500
+
+    Change skin:
+    -Skin draw function now returns an int that represents the skin id. All modules that use the skin draw function had to be changed to account for this new feature
+
+commit c4f274efcc8bec6a51165e5955c858817195d85a
+Author: Evan Navar Root <etn32@cornell.edu>
+Date:   Wed Nov 20 21:08:22 2024 -0500
+
+    Add partial test suite for Player:
+    - Added a few tests for the player module
+
+commit 7522d44b59264fae4b9d8030842509a3fd6a2ef1
+Author: jd2262 <jd2262@cornell.edu>
+Date:   Tue Nov 19 16:01:00 2024 -0500
+
+    Implement santa hat!
+    
+    - Added Santa Hat skin to skins.ml
+    - Changed skin used in player.ml to santa hat
+
+commit 5e48fe229ecb2d30e74b1b538d4507837983b8e5
+Author: jd2262 <jd2262@cornell.edu>
+Date:   Tue Nov 19 15:46:37 2024 -0500
+
+    Implement game termination
+    
+    - Implemented obstacle count before termination
+    - Used proper obstacles for each level
+    - Added win/death messages
+    - Changed background colors for sections
+
+commit 64787f7886ec57d84adda1a7b008707b3cdb9010
+Author: jd2262 <jd2262@cornell.edu>
+Date:   Wed Nov 13 21:28:13 2024 -0500
+
+    Updated all obstacle drawings
+    
+    - Added fire animation
+    - Added evergreen trees
+    - Increased sizes for all obstacles
+
+commit 48d31a95df8749af96d4764ee61dffcce07942d2
+Merge: f88a0c1 dc3910d
+Author: Evan Navar Root <etn32@cornell.edu>
+Date:   Wed Nov 13 21:00:46 2024 -0500
+
+    Implement player functionality:
+    - each game menu now keeps track of a player instance
+
+commit f88a0c1c677de606e0f7bcdc0573083862a5bdbd
+Author: Evan Navar Root <etn32@cornell.edu>
+Date:   Wed Nov 13 20:54:23 2024 -0500
+
+    Add player functionality:
+    - Each game menu now keeps track of a instance of the player module to keep track of skins and coins
+
+commit dc3910de06dfc786ea74929a9381088ca821c190
+Merge: 39c5fdf 95bc732
+Author: George Margono <gm564@cornell.edu>
+Date:   Wed Nov 13 20:37:28 2024 -0500
+
+    <Implemented background>
+
+commit 39c5fdf42f279a157d90fd1202aa3a54c2136f7c
+Merge: 4624781 26094de
+Author: George Margono <gm564@cornell.edu>
+Date:   Wed Nov 13 20:27:05 2024 -0500
+
+    <Implemented background for menu>
+    
+    - Implemented background with gradient colors matching biomes
+
+commit 95bc7325d556a2a8c83063cc56d64dea4374d139
+Merge: 2f5a672 26094de
+Author: Evan Navar Root <etn32@cornell.edu>
+Date:   Wed Nov 13 20:15:37 2024 -0500
+
+    Merge remote-tracking branch 'refs/remotes/origin/main'
+
+commit 2f5a6722bcbed1bb5726aaa4e0e1307c9cd5d857
+Author: Evan Navar Root <etn32@cornell.edu>
+Date:   Wed Nov 13 20:14:40 2024 -0500
+
+    Implement skins:
+    - contains information for drawing skins
+
+commit 2ab908bd481cf216dcc94073f362edc895e18118
+Author: Evan Navar Root <etn32@cornell.edu>
+Date:   Wed Nov 13 20:14:02 2024 -0500
+
+    Now draws skins
+
+commit 4624781cf7a925444b3b13adf69083adec752d9f
+Author: George Margono <gm564@cornell.edu>
+Date:   Wed Nov 13 20:13:51 2024 -0500
+
+    <Implemented background compilation unit>
+    
+    - Background gradient change for different biomes
+
+commit 89088b00e78c0acd64d5db665cb8892f43ddfcaf
+Author: Evan Navar Root <etn32@cornell.edu>
+Date:   Wed Nov 13 20:13:49 2024 -0500
+
+    Create player interface:
+    - will keep track of player information accross game states
+
+commit 53ead88b264bca16910ffc15c3ebc0d1743f41c9
+Author: Evan Navar Root <etn32@cornell.edu>
+Date:   Wed Nov 13 20:13:22 2024 -0500
+
+    Implement player:
+    -stores all the player information including skins powerups and money
+
+commit 1e0119c3d07c3fb9e39a9158809b8ee183f61042
+Author: Evan Navar Root <etn32@cornell.edu>
+Date:   Wed Nov 13 20:13:04 2024 -0500
+
+    Implement chest:
+    - when bought gives a random skin to the player
+
+commit 38cf912019e93b49b904b1dac6d48cb06ba612d4
+Author: Evan Navar Root <etn32@cornell.edu>
+Date:   Wed Nov 13 20:12:36 2024 -0500
+
+    Create chest interface:
+    - details the functionality of a chest
+
+commit 26094de7b2dd51457ff15116d3f9a1f0a9e00be5
+Author: jd2262 <jd2262@cornell.edu>
+Date:   Wed Nov 13 20:12:24 2024 -0500
+
+    Added more complex obstacle implementation
+    
+    - Added obstacleType compilation unit
+    - Added obstacle drawings in obstacle.ml
+
+commit 9d5dfd358df1b4093c013c96a832c849a69159cd
+Author: Evan Navar Root <etn32@cornell.edu>
+Date:   Sat Nov 2 13:31:07 2024 -0400
+
+    Implement create:
+    - creates a new player instance that has nothing
+    Implement add_coins:
+    -adds a specified number of coins to the player
+    Implement add_skin:
+    -Adds a skin to the list of available skins
+    Implement add_powerup:
+    - Applies the specified powerup to the player
+    Implement skins:
+    - retuns the skins the player owns
+    Implement coins:
+    - returns the amount of coins the player has
+
+commit 93355b5effb58d5e3fc23f66d42c95193c4cff38
+Author: Evan Navar Root <etn32@cornell.edu>
+Date:   Sat Nov 2 13:17:39 2024 -0400
+
+    Add player module:
+    - keeps track of player information liks skins and coins
+
+commit f1b09ab6db200f15e952b8bbec27eaf30fbe43c1
+Author: jd2262 <jd2262@cornell.edu>
+Date:   Wed Oct 30 20:35:18 2024 -0400
+
+    Added gallery YAML file for MS2
+
+commit dd0d2ac38429875cb7aea0089ef5247e43ee8e0e
+Author: Evan Navar Root <etn32@cornell.edu>
+Date:   Wed Oct 30 20:20:12 2024 -0400
+
+    created gitlog
+
 commit 17786d518e102d4475f30e62b8b725ec6e107862
 Author: Evan Navar Root <etn32@cornell.edu>
 Date:   Wed Oct 30 20:16:16 2024 -0400
