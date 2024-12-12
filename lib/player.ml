@@ -98,7 +98,7 @@ let rec get_skin_from_int lst n =
 let rec load_skins_help lst acc =
   match lst with
   | h :: t -> load_skins_help t (get_skin_from_int all_skins h :: acc)
-  | [] -> []
+  | [] -> acc
 
 let load_skins lst = load_skins_help lst []
 let get_completed_levels t = t.completed_levels
