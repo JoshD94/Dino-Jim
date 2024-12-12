@@ -45,7 +45,7 @@ let evergreen =
   { min_height = 30.0; max_height = 40.0; min_width = 15.0; max_width = 20.0 }
 
 let boulder =
-  { min_height = 70.0; max_height = 80.0; min_width = 70.0; max_width = 80.0 }
+  { min_height = 60.0; max_height = 70.0; min_width = 70.0; max_width = 80.0 }
 
 let wall =
   { min_height = 60.0; max_height = 70.0; min_width = 20.0; max_width = 40.0 }
