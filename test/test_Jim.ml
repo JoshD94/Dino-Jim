@@ -3,6 +3,7 @@ open Jim.Game
 open Jim
 open Jim.Skins
 open Jim.Player
+open Jim.Chest
 
 (* Setup for testing Skins *)
 let setup () =
@@ -98,6 +99,53 @@ let test_player_skins_id () =
     && List.map (fun x -> x 0. 0.) (Player.buyable_skin_list p2) = []
   in
   fun _ -> assert_bool "Skins id False" b
+
+(* Test Chest *)
+let test_chest () =
+  "Chest test"
+  >::
+  let p = create_player () in
+  let ch = create_chest () in
+  let a =
+    List.fold_left
+      (fun acc x -> acc && List.mem x [ 0; 1; 2 ])
+      true
+      (List.map (fun x -> x 0. 0.) (skins p))
+  in
+  let b = more_skins ch = true in
+  open_chest ch p;
+  let c =
+    List.fold_left
+      (fun acc x -> acc && List.mem x [ 9; 0; 1; 2 ])
+      true
+      (List.map (fun x -> x 0. 0.) (skins p))
+  in
+  let d = more_skins ch = true in
+  open_chest ch p;
+  let e =
+    List.fold_left
+      (fun acc x -> acc && List.mem x [ 10; 9; 0; 1; 2 ])
+      true
+      (List.map (fun x -> x 0. 0.) (skins p))
+  in
+  let f = more_skins ch = true in
+  open_chest ch p;
+  let g =
+    List.fold_left
+      (fun acc x -> acc && List.mem x [ 11; 10; 9; 0; 1; 2 ])
+      true
+      (List.map (fun x -> x 0. 0.) (skins p))
+  in
+  let h = more_skins ch = false in
+  open_chest ch p;
+  let i =
+    List.fold_left
+      (fun acc x -> acc && List.mem x [ 11; 10; 9; 0; 1; 2 ])
+      true
+      (List.map (fun x -> x 0. 0.) (skins p))
+  in
+  fun _ ->
+    assert_bool "Chest test false" (a && b && c && d && e && f && g && h && i)
 
 (* Test Buy skins *)
 let test_buy_skins () =
@@ -307,6 +355,7 @@ let player_tests =
   >::: [
          test_player_create ();
          test_player_skins_id ();
+         test_chest ();
          test_player_coins ();
          test_buy_skins ();
          test_add_skins ();
