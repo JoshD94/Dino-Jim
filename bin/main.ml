@@ -1095,7 +1095,6 @@ let create_scroll_state () =
   }
 
 let run_menu player =
-  init_window screen_width screen_height "Jim's Adventure";
   set_target_fps 60;
 
   let scroll_state = create_scroll_state () in
@@ -1107,5 +1106,6 @@ let run_menu player =
   close_window ()
 
 let () =
+  init_window screen_width screen_height "Jim's Adventure";
   let player = create_player () in
   run_menu player

@@ -31,52 +31,16 @@ let set_save_file filename = save_filename := filename
 let save_state t =
   try
     let oc = open_out !save_filename in
-    output_string oc "coins,completed_levels,has_seen_onboarding\n";
-    Printf.fprintf oc "%d,%s,%b\n" t.coins
+    output_string oc "coins,completed_levels,has_seen_onboarding,owned_skins\n";
+    let skin_indices =
+      String.concat ";"
+        (List.map string_of_int (List.map (fun x -> x 10000. 10000.) t.skins))
+    in
+    Printf.fprintf oc "%d,%s,%b,%s\n" t.coins
       (String.concat ";" (List.map string_of_int t.completed_levels))
-      t.has_seen_onboarding;
+      t.has_seen_onboarding skin_indices;
     close_out oc
   with _ -> ()
-
-let create_player () =
-  let player =
-    {
-      has_seen_onboarding = false;
-      current_skin = DefaultSkin.draw;
-      coins = 10;
-      skins = [ DefaultSkin.draw; SantaJim.draw; AngryJim.draw ];
-      buyable_skins =
-        [
-          RedJim.draw;
-          GreenJim.draw;
-          BlueJim.draw;
-          OrangeJim.draw;
-          PurpleJim.draw;
-          YellowJim.draw;
-        ];
-      completed_levels = [];
-    }
-  in
-  (* Try to load saved progress *)
-  (try
-     let ic = open_in !save_filename in
-     let _ = input_line ic in
-     (* Skip header *)
-     let saved_data = input_line ic in
-     let fields = String.split_on_char ',' saved_data in
-     (match fields with
-     | coins :: completed_levels_str :: has_seen_onboarding_str :: _ ->
-         player.coins <- int_of_string coins;
-         player.completed_levels <-
-           (if completed_levels_str = "" then []
-            else
-              List.map int_of_string
-                (String.split_on_char ';' completed_levels_str));
-         player.has_seen_onboarding <- bool_of_string has_seen_onboarding_str
-     | _ -> ());
-     close_in ic
-   with _ -> ());
-  player
 
 let rec remove_from_buyable skin_list (skin : float -> float -> int) =
   match skin_list with
@@ -127,10 +91,10 @@ let complete_level t level =
   end
 
 let rec load_skins_help lst acc =
+  let temp = ref [] in
   match lst with
   | [] -> []
   | h :: t ->
-      let temp = ref [] in
       for i = 0 to Array.length all_skins - 1 do
         if all_skins.(i) 10000. 10000. = h then temp := all_skins.(i) :: !temp
       done;
@@ -138,3 +102,54 @@ let rec load_skins_help lst acc =
 
 let load_skins lst = load_skins_help lst []
 let get_completed_levels t = t.completed_levels
+
+let create_player () =
+  let player =
+    {
+      has_seen_onboarding = false;
+      current_skin = DefaultSkin.draw;
+      coins = 10;
+      skins = [ DefaultSkin.draw ];
+      (* Start with just default skin *)
+      buyable_skins =
+        [
+          RedJim.draw;
+          GreenJim.draw;
+          BlueJim.draw;
+          OrangeJim.draw;
+          PurpleJim.draw;
+          YellowJim.draw;
+        ];
+      completed_levels = [];
+    }
+  in
+  (* Try to load saved progress *)
+  try
+    let ic = open_in !save_filename in
+    let _ = input_line ic in
+    (* Skip header *)
+    let saved_data = input_line ic in
+    let fields = String.split_on_char ',' saved_data in
+    (match fields with
+    | coins :: completed_levels_str :: has_seen_onboarding_str
+      :: owned_skins_str :: _ ->
+        player.coins <- int_of_string coins;
+        player.completed_levels <-
+          (if completed_levels_str = "" then []
+           else
+             List.map int_of_string
+               (String.split_on_char ';' completed_levels_str));
+        player.has_seen_onboarding <- bool_of_string has_seen_onboarding_str;
+        player.skins <-
+          (if owned_skins_str = "" then [ DefaultSkin.draw ]
+           else
+             let skins_idxs =
+               List.map int_of_string (String.split_on_char ';' owned_skins_str)
+             in
+             load_skins skins_idxs)
+    | _ -> ());
+    close_in ic;
+    player
+  with _ ->
+    ();
+    player
