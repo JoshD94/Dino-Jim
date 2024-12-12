@@ -57,3 +57,6 @@ val get_completed_levels : t -> int list
 val set_save_file : string -> unit
 (** [set_save_file file_path] sets the filepath for the savefile of any player
     to [file_path] *)
+
+val save_state : t -> unit
+(** [save_state player] saves the state of [player] to the csv save file. *)
