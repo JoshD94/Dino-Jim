@@ -771,9 +771,11 @@ let run_shop player =
             add_coins state (0 - snd buyable_items.(i));
             if i < num_items - 1 then (
               add_skin player buyable_skins.(i);
-              bought_items.(i) <- true);
+              bought_items.(i) <- true;
+              save_state player);
             if i = num_items - 1 then (
               open_chest chest player;
+              save_state player;
               if more_skins chest <> true then bought_items.(i) <- true))
         end
       done;
