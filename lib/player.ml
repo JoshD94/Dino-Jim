@@ -9,6 +9,22 @@ type t = {
   mutable completed_levels : int list;
 }
 
+let all_skins =
+  [|
+    DefaultSkin.draw;
+    SantaJim.draw;
+    AngryJim.draw;
+    RedJim.draw;
+    GreenJim.draw;
+    BlueJim.draw;
+    OrangeJim.draw;
+    PurpleJim.draw;
+    YellowJim.draw;
+    InvisibleJim.draw;
+    DarthJim.draw;
+    MagentaJim.draw;
+  |]
+
 let save_filename = ref "save_game.csv"
 let set_save_file filename = save_filename := filename
 
@@ -110,4 +126,15 @@ let complete_level t level =
     save_state t
   end
 
+let rec load_skins_help lst acc =
+  match lst with
+  | [] -> []
+  | h :: t ->
+      let temp = ref [] in
+      for i = 0 to Array.length all_skins - 1 do
+        if all_skins.(i) 10000. 10000. = h then temp := all_skins.(i) :: !temp
+      done;
+      load_skins_help t (!temp @ acc)
+
+let load_skins player lst = player.skins <- load_skins_help lst []
 let get_completed_levels t = t.completed_levels
