@@ -158,3 +158,9 @@ let init_obstacles biome total distance () =
   obstacle_tracking :=
     { spawned_count = 1; total_count = total; passed_count = 0 };
   [ create (1200.0 +. safe_start_distance) biome ]
+
+let get_biome_for_level level =
+  if level <= 3 then "grass"
+  else if level <= 6 then "rock"
+  else if level <= 9 then "snow"
+  else "lava"

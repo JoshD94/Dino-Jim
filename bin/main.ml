@@ -811,12 +811,6 @@ let screen_height = 800
 let top_padding = 90.0
 let calculate_obstacle_count level = 10 + ((level - 1) * 3)
 
-let get_biome_for_level level =
-  if level <= 3 then "grass"
-  else if level <= 6 then "rock"
-  else if level <= 9 then "snow"
-  else "lava"
-
 let get_path_points scroll_y =
   Array.init num_levels (fun i ->
       let base_y = float_of_int i *. level_spacing in
