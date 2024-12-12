@@ -136,5 +136,5 @@ let rec load_skins_help lst acc =
       done;
       load_skins_help t (!temp @ acc)
 
-let load_skins player lst = player.skins <- load_skins_help lst []
+let load_skins lst = load_skins_help lst []
 let get_completed_levels t = t.completed_levels
