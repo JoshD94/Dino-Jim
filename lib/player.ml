@@ -10,7 +10,7 @@ type t = {
 }
 
 let all_skins =
-  [|
+  [
     DefaultSkin.draw;
     SantaJim.draw;
     AngryJim.draw;
@@ -23,7 +23,7 @@ let all_skins =
     InvisibleJim.draw;
     DarthJim.draw;
     MagentaJim.draw;
-  |]
+  ]
 
 let save_filename = ref "save_game.csv"
 let set_save_file filename = save_filename := filename
@@ -126,15 +126,15 @@ let complete_level t level =
     save_state t
   end
 
+let rec get_skin_from_int lst n =
+  match lst with
+  | [] -> failwith "Impossible"
+  | h :: t -> if h 10000. 10000. = n then h else get_skin_from_int t n
+
 let rec load_skins_help lst acc =
   match lst with
+  | h :: t -> load_skins_help t (get_skin_from_int h :: acc)
   | [] -> []
-  | h :: t ->
-      let temp = ref [] in
-      for i = 0 to Array.length all_skins - 1 do
-        if all_skins.(i) 10000. 10000. = h then temp := all_skins.(i) :: !temp
-      done;
-      load_skins_help t (!temp @ acc)
 
 let load_skins lst = load_skins_help lst []
 let get_completed_levels t = t.completed_levels
