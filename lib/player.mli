@@ -11,7 +11,6 @@ val buyable_skin_list : t -> (float -> float -> int) list
 val current_skin : t -> float -> float -> int
 val select_skin : t -> (float -> float -> int) -> unit
 val has_skin : t -> (float -> float -> int) -> bool
-val load_skins : t -> int list -> unit
 
 (* New level progress functions *)
 val is_level_unlocked : t -> int -> bool
