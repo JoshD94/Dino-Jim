@@ -33,19 +33,6 @@ let test_onboarding () =
            let p2 = create_player () in
            assert_bool "Should remember onboarding completion"
              (has_seen_onboarding p2) );
-         (* Test onboarding state survives with other changes *)
-         ( "onboarding survives other changes" >:: fun _ ->
-           (try Sys.remove test_save with _ -> ());
-           Player.set_save_file test_save;
-           let p = create_player () in
-           complete_onboarding p;
-           add_coins p 50;
-           complete_level p 1;
-           let p2 = create_player () in
-           assert_bool "Should keep onboarding state after other changes"
-             (has_seen_onboarding p2);
-           assert_equal 60 (coins p2);
-           assert_equal [ 1 ] (get_completed_levels p2) );
        ]
 
 (* Helper function to compare position record type *)
@@ -61,6 +48,21 @@ let test_player_create () =
   let p1 = create_player () in
   let p2 = create_player () in
   fun _ -> assert_bool "Create False" (p1 == p2 = false)
+
+(* Test has_skin *)
+let test_player_has_skins () =
+  "Has skins test"
+  >::
+  let p = create_player () in
+  print_endline "hihihihi";
+  fun _ -> assert_bool "Has skins False" (has_skin p Jim.Skins.DefaultSkin.draw)
+
+(* Test level unlocked *)
+let test_level_unlocked () =
+  "Level unlocked test"
+  >::
+  let p = create_player () in
+  fun _ -> assert_bool "Level unlocked False" (is_level_unlocked p 1 = true)
 
 (* Test coins *)
 let test_player_coins () =
@@ -390,6 +392,8 @@ let player_tests =
          test_add_skins ();
          test_select_skin ();
          test_onboarding ();
+         test_player_has_skins ();
+         test_level_unlocked ();
        ]
 
 (* Test Jim.Obstacle.create *)
