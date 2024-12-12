@@ -77,7 +77,6 @@ let test_player_skins_id () =
   >::
   let p1 = create_player () in
   let p2 = create_player () in
-  select_skin p1 SantaJim.draw;
   select_skin p2 DefaultSkin.draw;
   add_skin p2 RedJim.draw;
   add_skin p2 GreenJim.draw;
@@ -89,11 +88,11 @@ let test_player_skins_id () =
   add_skin p2 DarthJim.draw;
   add_skin p2 MagentaJim.draw;
   let b =
-    (Player.current_skin p1) 0. 0. = SantaJim.draw 0. 0.
+    (Player.current_skin p1) 0. 0. = DefaultSkin.draw 0. 0.
     && (Player.current_skin p2) 0. 0. = DefaultSkin.draw 0. 0.
-    && List.map (fun x -> x 0. 0.) (Player.skins p1) = [ 0; 1; 2 ]
+    && List.map (fun x -> x 0. 0.) (Player.skins p1) = [ 0 ]
     && List.map (fun x -> x 0. 0.) (Player.skins p2)
-       = [ 11; 10; 9; 8; 7; 6; 5; 4; 3; 0; 1; 2 ]
+       = [ 11; 10; 9; 8; 7; 6; 5; 4; 3; 0 ]
     && List.map (fun x -> x 0. 0.) (Player.buyable_skin_list p1)
        = [ 3; 4; 5; 6; 7; 8 ]
     && List.map (fun x -> x 0. 0.) (Player.buyable_skin_list p2) = []
@@ -108,7 +107,7 @@ let test_chest () =
   let ch = create_chest () in
   let a =
     List.fold_left
-      (fun acc x -> acc && List.mem x [ 0; 1; 2 ])
+      (fun acc x -> acc && List.mem x [ 0 ])
       true
       (List.map (fun x -> x 0. 0.) (skins p))
   in
@@ -116,7 +115,7 @@ let test_chest () =
   open_chest ch p;
   let c =
     List.fold_left
-      (fun acc x -> acc && List.mem x [ 9; 0; 1; 2 ])
+      (fun acc x -> acc && List.mem x [ 9; 0 ])
       true
       (List.map (fun x -> x 0. 0.) (skins p))
   in
@@ -124,7 +123,7 @@ let test_chest () =
   open_chest ch p;
   let e =
     List.fold_left
-      (fun acc x -> acc && List.mem x [ 10; 9; 0; 1; 2 ])
+      (fun acc x -> acc && List.mem x [ 10; 9; 0 ])
       true
       (List.map (fun x -> x 0. 0.) (skins p))
   in
@@ -132,20 +131,37 @@ let test_chest () =
   open_chest ch p;
   let g =
     List.fold_left
-      (fun acc x -> acc && List.mem x [ 11; 10; 9; 0; 1; 2 ])
+      (fun acc x -> acc && List.mem x [ 11; 10; 9; 0 ])
       true
       (List.map (fun x -> x 0. 0.) (skins p))
   in
-  let h = more_skins ch = false in
+  let h = more_skins ch = true in
   open_chest ch p;
   let i =
     List.fold_left
-      (fun acc x -> acc && List.mem x [ 11; 10; 9; 0; 1; 2 ])
+      (fun acc x -> acc && List.mem x [ 1; 11; 10; 9; 0 ])
+      true
+      (List.map (fun x -> x 0. 0.) (skins p))
+  in
+  let j = more_skins ch = true in
+  open_chest ch p;
+  let k =
+    List.fold_left
+      (fun acc x -> acc && List.mem x [ 2; 1; 11; 10; 9; 0 ])
+      true
+      (List.map (fun x -> x 0. 0.) (skins p))
+  in
+  let l = more_skins ch = false in
+  open_chest ch p;
+  let m =
+    List.fold_left
+      (fun acc x -> acc && List.mem x [ 2; 1; 11; 10; 9; 0 ])
       true
       (List.map (fun x -> x 0. 0.) (skins p))
   in
   fun _ ->
-    assert_bool "Chest test false" (a && b && c && d && e && f && g && h && i)
+    assert_bool "Chest test false"
+      (a && b && c && d && e && f && g && h && i && j && k && l && m)
 
 (* Test Buy skins *)
 let test_buy_skins () =
@@ -153,6 +169,8 @@ let test_buy_skins () =
   >::
   let p = create_player () in
   add_skin p DefaultSkin.draw;
+  add_skin p SantaJim.draw;
+  add_skin p AngryJim.draw;
   let a =
     List.fold_left
       (fun acc x -> acc && List.mem x [ 3; 4; 5; 6; 7; 8 ])
@@ -214,11 +232,18 @@ let test_add_skins () =
   add_skin p DefaultSkin.draw;
   let a =
     List.fold_left
-      (fun acc x -> acc && List.mem x [ 0; 1; 2 ])
+      (fun acc x -> acc && List.mem x [ 0 ])
       true
       (List.map (fun x -> x 0. 0.) (skins p))
   in
   add_skin p SantaJim.draw;
+  let b2 =
+    List.fold_left
+      (fun acc x -> acc && List.mem x [ 0; 1 ])
+      true
+      (List.map (fun x -> x 0. 0.) (skins p))
+  in
+  add_skin p AngryJim.draw;
   let b =
     List.fold_left
       (fun acc x -> acc && List.mem x [ 0; 1; 2 ])
@@ -298,7 +323,7 @@ let test_add_skins () =
   ();
   fun _ ->
     assert_bool "Buy skins false"
-      (a && b && c && d && e && f && g && h && i && j && k && l)
+      (a && b && c && d && e && f && g && h && i && j && k && l && b2)
 
 (* Test Skin select *)
 let test_select_skin () =
@@ -307,11 +332,14 @@ let test_select_skin () =
   let p = create_player () in
   select_skin p DefaultSkin.draw;
   let a = (current_skin p) 0. 0. = DefaultSkin.draw 0. 0. in
+  add_skin p SantaJim.draw;
   select_skin p SantaJim.draw;
   let b =
     (current_skin p) 0. 0. = SantaJim.draw 0. 0.
     && (current_skin p) 0. 0. <> DefaultSkin.draw 0. 0.
   in
+  add_skin p SantaJim.draw;
+  add_skin p AngryJim.draw;
   select_skin p AngryJim.draw;
   let c = (current_skin p) 0. 0. = AngryJim.draw 0. 0. in
   select_skin p OrangeJim.draw;
