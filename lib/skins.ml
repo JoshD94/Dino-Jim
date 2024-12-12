@@ -21,6 +21,11 @@ let draw_default_with_color color x y =
   (* Eye *)
   draw_rectangle (int_of_float x + 18) (int_of_float y + 5) 3 3 Color.black
 
+let draw_chest x y =
+  draw_rectangle (int_of_float x) (int_of_float y) 40 30 Color.brown;
+  draw_rectangle (int_of_float x) (int_of_float y + 10) 40 5 Color.gold;
+  draw_rectangle (int_of_float x + 18) (int_of_float y + 15) 4 5 Color.gold
+
 module type Skin = sig
   val draw : float -> float -> int
 end

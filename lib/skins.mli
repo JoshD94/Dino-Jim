@@ -40,3 +40,6 @@ module YellowJim : Skin
 
 module PurpleJim : Skin
 (** [PurpleJim] Contains the Purple Jim skin draw function. *)
+
+val draw_chest : float -> float -> unit
+(** [draw_chest x y] draws the chest sprite at ([x],[y]) *)
