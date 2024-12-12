@@ -21,4 +21,4 @@ git-repo: "https://github.coecis.cornell.edu/etn32/Jim"
 demo-video-url: "https://youtu.be/4_HjaWmlNN0"
 # Write a short, attention-grabbing description of your project.
 desc: >
-  Jim is a heavily modded version of the Chrome Dino Game. Complete with a storyline, our protagonist Jim (the dino) is finding his way home to his family. It features different levels, a shop function, and special abilities (digging underground, flying?). The game is designed to be challenging, fun, and quirky. It is built using OCaml and the UI library Raylib. Play our game to help Jim get to his family and enjoy the intriguing storyline throughout!
+  Jim is a heavily modded version of the Chrome Dino Game. Complete with a storyline, our protagonist Jim (the dino) is finding his way home to his family. It features different levels, a shop function, and multiple skins to choose from. The game is designed to be challenging, fun, and quirky. It is built using OCaml and the UI library Raylib. Play our game to help Jim get to his family and enjoy the intriguing storyline!
