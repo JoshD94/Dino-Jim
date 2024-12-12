@@ -29,3 +29,6 @@ val min_spacing : float ref
 
 val obstacle_tracking : obstacle_state ref
 (** Current obstacle tracking state *)
+
+val get_biome_for_level : int -> string
+(** Returns biome for specified level*)
